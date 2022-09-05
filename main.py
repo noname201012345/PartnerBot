@@ -200,5 +200,5 @@ async def on_message_delete(msg):
                     await webhook.delete_message(message.id)
 
 
-token = os.getenv['token']
+token = os.getenv("token")
 client.run(token)
