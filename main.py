@@ -2,7 +2,10 @@ import discord
 from discord.ext import commands
 import json
 import datetime
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 intents = discord.Intents.default()
 intents.members = True
