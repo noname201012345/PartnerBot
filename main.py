@@ -48,7 +48,7 @@ def get_rfmess(msg):
 def get_rfbefore(msg, before):
     message = msg.content
     new_string = f"> <@{before.author.id}>: "
-    if "\n" in ref.content:
+    if "\n" in before.content:
         rc = before.content
         start = rc.find("\n") + 1
         new_string += rc[0:(start-1)]
