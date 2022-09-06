@@ -28,12 +28,40 @@ async def on_ready():
 def get_rfmess(msg):
     message = msg.content
     ref = msg.reference.resolved
-    new_string = f"> <@{ref.author.id}>: {ref.content}\n{message}"
+    new_string = f"> <@{ref.author.id}>: "
+    if "\n" in ref.content:
+        rc = ref.content
+        start = rc.find("\n") + 1
+        new_string += rc[0:(start-1)]
+        new_string += "> "
+        while rc.find("\n",start) != -1:
+            end = rc.find("\n",start)
+            new_string += rc[start,end]
+            new_string += "> "
+            start = end + 1
+        new_string += rc[start:-1]
+    else:
+        new_string += f"{ref.content}"
+    new_string += f"\n{message}"
     return new_string
 
 def get_rfbefore(msg, before):
     message = msg.content
-    new_string = f"> <@{before.author.id}>: {before.content}\n{message}"
+    new_string = f"> <@{before.author.id}>: "
+    if "\n" in ref.content:
+        rc = before.content
+        start = rc.find("\n") + 1
+        new_string += rc[0:(start-1)]
+        new_string += "> "
+        while rc.find("\n",start) != -1:
+            end = rc.find("\n",start)
+            new_string += rc[start,end]
+            new_string += "> "
+            start = end + 1
+        new_string += rc[start:-1]
+    else:
+        new_string += f"{before.content}"
+    new_string += f"\n{message}"
     return new_string
     
 def get_rfdel(msg):
