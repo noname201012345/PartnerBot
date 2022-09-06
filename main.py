@@ -163,6 +163,7 @@ async def on_message(message):
             else:
                 aurl = message.author.avatar.url
             await webhook.send(get_mes(message.content),username=message.author.display_name,avatar_url=aurl,files=mfile)
+            print(message.type)
 
 
 @client.event
