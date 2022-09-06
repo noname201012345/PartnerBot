@@ -4,10 +4,7 @@ import json
 import datetime
 import requests
 import base64
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 intents = discord.Intents.default()
 intents.members = True
