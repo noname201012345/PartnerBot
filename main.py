@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import json
 import datetime
+import requests
+import base64
 from dotenv import load_dotenv
 import os
 
@@ -14,6 +16,9 @@ intents.reactions = True
 
 client = commands.Bot(command_prefix='!', intents=intents)
 
+rtoken = os.getenv("rtoken")
+header = {"Authorization": "Bearer {}".format(rtoken)}
+datalink = "https://api.github.com/repos/noname201012345/PartnerBot/contents/data.json"
 
 @client.event
 async def on_ready():
@@ -87,6 +92,11 @@ async def add(ctx, partner):
                 data[guild]["id"].append(partner)
         with open("data.json", "w") as f:
             json.dump(data, f)
+        r = requests.get(datalink,headers=header)
+        sh=r.json()["sha"]
+        base64S= base64.b64encode(bytes(data, "utf-8"))
+        rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+        response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     except:
         data[guild] = {}
         data[guild]["channel"] = ctx.channel.id
@@ -96,6 +106,11 @@ async def add(ctx, partner):
         data[guild]["url"] = webhook.url
         with open("data.json", "w") as f:
             json.dump(data, f)
+        r = requests.get(datalink,headers=header)
+        sh=r.json()["sha"]
+        base64S= base64.b64encode(bytes(data, "utf-8"))
+        rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+        response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     await ctx.send("connected!")
 
 
@@ -112,7 +127,12 @@ async def remove(ctx, partner):
                 if x == partner:
                     data[guild]["id"].remove(x)
             with open("data.json", "w") as f:
-                json.dump(data, f)
+                json.dump(data, f)    
+            r = requests.get(datalink,headers=header)
+            sh=r.json()["sha"]
+            base64S= base64.b64encode(bytes(data, "utf-8"))
+            rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+            response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     except:
         ctx.send("you didn't add yet!")
 
