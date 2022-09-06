@@ -25,38 +25,6 @@ async def on_ready():
     print(f'Successfully logged in as {client.user}')
 
 
-def get_mes(msg):
-    new_string = ""
-    if msg.find(":") == -1 or msg.find(":", (msg.find(":") + 1)) == -1:
-        new_string += msg
-    else:
-        start = (msg.find(":") + 1)
-        new_string += msg[0:msg.find(":")]
-        if msg[start] == " ":
-            new_string += ":"
-        while start != len(msg) and msg.find(":", start) != -1:
-            end = msg.find(":", start)
-            check = 0
-            for emoji in client.emojis:
-                if msg[start:end] == emoji.name:
-                    new_string += f":{emoji.name}:"
-                    check = 1
-                    break
-            if msg[start] == " " and msg[start - 2] == " ":
-                new_string += ":"
-            if check == 0:
-                if msg[start] != " ":
-                    new_string += ":"
-                new_string += msg[start:end]
-                if msg[end - 1] != " " and msg[end - 1] != ":":
-                    new_string += ":"
-            start = end + 1
-        if msg.find(":", start) == -1 and start != len(msg):
-            new_string += msg[start:len(msg)]
-        if start == len(msg) and msg[start - 2] == " ":
-            new_string += ":"
-    return new_string
-
 @client.command()
 async def add(ctx, partner):
     with open("data.json", "r") as f:
@@ -161,7 +129,7 @@ async def on_message(message):
                 aurl = webhook.default_avatar
             else:
                 aurl = message.author.avatar.url
-            await webhook.send(get_mes(message.content),username=message.author.display_name,avatar_url=aurl,files=mfile)
+            await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
             if message.type == discord.MessageType.reply:
                 print(message.reference.resolved.content)
 
@@ -184,8 +152,8 @@ async def on_message_edit(before, after):
                 if w.url == data[x]["url"]:
                     webhook = w
             async for message in channel.history(before=after.edited_at, after=before.created_at):
-                if message.content == get_mes(before.content) and message.author.bot:
-                    await webhook.edit_message(message.id,content=get_mes(after.content),attachments=mfile)
+                if message.content == before.content and message.author.bot:
+                    await webhook.edit_message(message.id,content=after.content,attachments=mfile)
                     break
 
 @client.event
@@ -204,7 +172,7 @@ async def on_message_delete(msg):
                 if w.url == data[x]["url"]:
                     webhook = w
             async for message in channel.history(after=msg.created_at, before=timestamp):
-                if message.content == get_mes(msg.content) and message.author.bot:
+                if message.content == msg.content and message.author.bot:
                     await webhook.delete_message(message.id)
                     break
 
