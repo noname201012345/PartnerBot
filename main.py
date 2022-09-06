@@ -57,7 +57,6 @@ def get_mes(msg):
             new_string += ":"
     return new_string
 
-
 @client.command()
 async def add(ctx, partner):
     with open("data.json", "r") as f:
@@ -164,7 +163,7 @@ async def on_message(message):
                 aurl = message.author.avatar.url
             await webhook.send(get_mes(message.content),username=message.author.display_name,avatar_url=aurl,files=mfile)
             if message.type == discord.MessageType.reply:
-                message.to_reference()
+                print(message.reference.resolved.content)
 
 
 @client.event
