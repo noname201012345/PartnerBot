@@ -171,7 +171,7 @@ async def on_message_edit(before, after):
                     webhook = w
             async for message in tchannel.history(before=after.edited_at, after=before.created_at):
                 if message.type == discord.MessageType.reply:
-                    print(get_rfbefore(message,before))
+                    print(f"{message.reference.resolved.id} : {after.id}")
                     if message.reference.resolved.id == after.id:
                         async for msg in channel.history(before=after.edited_at, after=before.created_at):
                             if msg.content == get_rfbefore(message,before) and message.author.bot:
