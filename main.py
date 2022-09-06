@@ -94,7 +94,7 @@ async def add(ctx, partner):
             json.dump(data, f)
         r = requests.get(datalink,headers=header)
         sh=r.json()["sha"]
-        base64S= base64.b64encode(bytes(data, "utf-8"))
+        base64S= base64.b64encode(bytes(json.dumps(data), "utf-8"))
         rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
         response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     except:
@@ -108,7 +108,7 @@ async def add(ctx, partner):
             json.dump(data, f)
         r = requests.get(datalink,headers=header)
         sh=r.json()["sha"]
-        base64S= base64.b64encode(bytes(data, "utf-8"))
+        base64S= base64.b64encode(bytes(json.dumps(data), "utf-8"))
         rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
         response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     await ctx.send("connected!")
@@ -130,7 +130,7 @@ async def remove(ctx, partner):
                 json.dump(data, f)    
             r = requests.get(datalink,headers=header)
             sh=r.json()["sha"]
-            base64S= base64.b64encode(bytes(data, "utf-8"))
+            base64S= base64.b64encode(bytes(json.dumps(data), "utf-8"))
             rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
             response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     except:
