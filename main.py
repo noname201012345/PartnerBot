@@ -215,6 +215,7 @@ async def on_message_edit(before, after):
                             break
                     else:
                         if message.content == get_rfmess(before) and message.author.bot:
+                            print(get_rfmess(before))
                             await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
                             break
                 else:
@@ -257,6 +258,7 @@ async def on_message_delete(msg):
                             break
                     else:
                         if message.content == get_rfmess(msg) and message.author.bot:
+                            print(get_rfmess(msg))
                             await webhook.delete_message(message.id)
                             break
                 else:
