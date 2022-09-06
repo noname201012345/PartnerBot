@@ -175,7 +175,10 @@ async def on_message_edit(before, after):
                     if message.reference.resolved.id == after.id:
                         async for msg in channel.history(before=after.edited_at, after=before.created_at):
                             if msg.content == get_rfbefore(message,before) and message.author.bot:
-                                await webhook.edit_message(message.id,content=get_rfmess(message),attachments=mfile)
+                                rfile = []
+                                for x in msg.attachments:
+                                    rfile.append(await x.to_file())
+                                await webhook.edit_message(msg.id,content=get_rfmess(message),attachments=rfile)
                                 break
             async for message in channel.history(before=after.edited_at, after=before.created_at):
                 if before.type == discord.MessageType.reply:
@@ -209,7 +212,10 @@ async def on_message_delete(msg):
                     if message.reference.resolved.id == msg.id:
                         async for mess in channel.history(after=msg.created_at, before=timestamp):
                             if mess.content == get_rfbefore(message,msg) and message.author.bot:
-                                await webhook.edit_message(message.id,content=get_rfdel(message),attachments=mfile)
+                                rfile = []
+                                for x in msg.attachments:
+                                    rfile.append(await x.to_file())
+                                await webhook.edit_message(mess.id,content=get_rfdel(message),attachments=rfile)
                                 break
             async for message in channel.history(after=msg.created_at, before=timestamp):
                 if msg.type == discord.MessageType.reply:
