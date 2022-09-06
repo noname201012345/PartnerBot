@@ -197,6 +197,7 @@ async def on_message_delete(msg):
     if not msg.author.bot and msg.channel.id == tcha:
         for x in partner:
             channel = client.get_channel(data[x]["channel"])
+            tchannel = client.get_channel(tcha)
             wkl = await channel.webhooks()
             for w in wkl:
                 if w.url == data[x]["url"]:
