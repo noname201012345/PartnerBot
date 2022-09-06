@@ -39,7 +39,7 @@ def get_rfmess(msg):
             new_string += rc[start:end]
             new_string += "\n> "
             start = end + 1
-        new_string += rc[start:-1]
+        new_string += rc[(start-1):-1]
     else:
         new_string += f"{ref.content}"
     new_string += f"\n{message}"
@@ -58,7 +58,7 @@ def get_rfbefore(msg, before):
             new_string += rc[start:end]
             new_string += "\n> "
             start = end + 1
-        new_string += rc[start:-1]
+        new_string += rc[(start-1):-1]
     else:
         new_string += f"{before.content}"
     new_string += f"\n{message}"
