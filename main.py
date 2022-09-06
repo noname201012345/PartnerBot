@@ -25,6 +25,22 @@ async def on_ready():
     print(f'Successfully logged in as {client.user}')
 
 
+def get_rfmess(msg):
+    message = msg.content
+    ref = msg.reference.resolved
+    new_string = f"> <@{ref.author.id}>: {ref.content}\n{message}"
+    return new_string
+
+def get_rfbefore(msg,before):
+    message = msg.content
+    new_string = f"> <@{before.author.id}>: {before.content}\n{message}"
+    return new_string
+    
+def get_rfdel(msg):
+    message = msg.content
+    new_string = f"> Deleted Message\n{message}"
+    return new_string
+    
 @client.command()
 async def add(ctx, partner):
     with open("data.json", "r") as f:
@@ -129,9 +145,10 @@ async def on_message(message):
                 aurl = webhook.default_avatar
             else:
                 aurl = message.author.avatar.url
-            await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
             if message.type == discord.MessageType.reply:
-                print(message.reference.resolved.content)
+                await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+            else:
+                await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
 
 
 @client.event
@@ -147,14 +164,27 @@ async def on_message_edit(before, after):
     if not after.author.bot and after.channel.id == tcha:
         for x in partner:
             channel = client.get_channel(data[x]["channel"])
+            tchannel = client.get_channel(tcha)
             wkl = await channel.webhooks()
             for w in wkl:
                 if w.url == data[x]["url"]:
                     webhook = w
+            async for message in tchannel.history(before=after.edited_at, after=before.created_at):
+                if message.type == discord.MessageType.reply:
+                    if message.reference.resolved.id == after.id:
+                        async for msg in channel.history(before=after.edited_at, after=before.created_at):
+                            if msg.content == get_rfbefore(message,before) and message.author.bot:
+                                await webhook.edit_message(message.id,content=get_rfmess(message),attachments=mfile)
+                                break
             async for message in channel.history(before=after.edited_at, after=before.created_at):
-                if message.content == before.content and message.author.bot:
-                    await webhook.edit_message(message.id,content=after.content,attachments=mfile)
-                    break
+                if before.type == discord.MessageType.reply:
+                    if message.content == get_rfmess(before) and message.author.bot:
+                        await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
+                        break
+                else:
+                    if message.content == before.content and message.author.bot:
+                        await webhook.edit_message(message.id,content=after.content,attachments=mfile)
+                        break
 
 @client.event
 async def on_message_delete(msg):
@@ -171,10 +201,23 @@ async def on_message_delete(msg):
             for w in wkl:
                 if w.url == data[x]["url"]:
                     webhook = w
+            
+            async for message in tchannel.history(after=msg.created_at, before=timestamp):
+                if message.type == discord.MessageType.reply:
+                    if message.reference.resolved.id == msg.id:
+                        async for mess in channel.history(after=msg.created_at, before=timestamp):
+                            if mess.content == get_rfbefore(message,msg) and message.author.bot:
+                                await webhook.edit_message(message.id,content=get_rfdel(message),attachments=mfile)
+                                break
             async for message in channel.history(after=msg.created_at, before=timestamp):
-                if message.content == msg.content and message.author.bot:
-                    await webhook.delete_message(message.id)
-                    break
+                if msg.type == discord.MessageType.reply:
+                    if message.content == get_rfmess(msg) and message.author.bot:
+                        await webhook.delete_message(message.id)
+                        break
+                else:
+                    if message.content == msg.content and message.author.bot:
+                        await webhook.delete_message(message.id)
+                        break
 
 
 token = os.getenv("token")
