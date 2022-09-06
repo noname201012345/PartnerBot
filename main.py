@@ -181,9 +181,7 @@ async def on_message_edit(before, after):
                                 break
             async for message in channel.history(before=after.edited_at, after=before.created_at):
                 if before.type == discord.MessageType.reply:
-                    print(before.reference.cached_message)
-                    if before.reference.resolved == discord.DeletedReferencedMessage:
-                        print(True)
+                    if before.reference.cached_message == None:
                         if message.content == get_rfdel(before) and message.author.bot:
                             await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                             break
@@ -225,7 +223,7 @@ async def on_message_delete(msg):
                                 break
             async for message in channel.history(after=msg.created_at, before=timestamp):
                 if msg.type == discord.MessageType.reply:
-                    if msg.reference.resolved == discord.DeletedReferencedMessage:
+                    if msg.reference.cached_message == None:
                         if message.content == get_rfdel(msg) and message.author.bot:
                             await webhook.delete_message(message.id)
                             break
