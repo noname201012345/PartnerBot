@@ -184,12 +184,13 @@ async def on_message_edit(before, after):
             for w in wkl:
                 if w.url == data[x]["url"]:
                     webhook = w
+            ind=0
             async for mess in tchannel.history(before=after.edited_at, after=before.created_at):
                 if mess.content == before.content and not mess.author.bot:
                     mesloc.append(mess)
             for m in mesloc:
                 if m.id == before.id:
-                    index = mesloc.index(m)
+                    ind = mesloc.index(m)
             mesloc.clear()
             async for message in channel.history(before=after.edited_at, after=before.created_at):
                 if message.content == get_mes(before.content) and message.author.bot:
