@@ -120,8 +120,7 @@ async def remove(ctx, partner):
 @client.event
 async def on_message(message):
     await client.process_commands(message)
-    if message.content.startswith("!add") or message.content.startswith(
-            "!remove"):
+    if message.content.startswith("!add") or message.content.startswith("!remove"):
         await message.delete()
     with open("data.json", "r") as f:
         data = json.load(f)
@@ -139,15 +138,11 @@ async def on_message(message):
             mfile = []
             for x in message.attachments:
                 mfile.append(await x.to_file())
-            await webhook.edit(name=message.author.name)
             if message.author.avatar == None:
                 aurl = webhook.default_avatar
             else:
                 aurl = message.author.avatar.url
-                await webhook.send(get_mes(message.content),
-                                   username=message.author.display_name,
-                                   avatar_url=aurl,
-                                   files=mfile)
+            await webhook.send(get_mes(message.content),username=message.author.display_name,avatar_url=aurl,files=mfile)
 
 
 @client.event
@@ -169,12 +164,8 @@ async def on_message_edit(before, after):
                     webhook = w
             async for message in channel.history(
                     before=after.edited_at, after=before.created_at):
-                if message.content == get_mes(
-                        before.content
-                ) and message.author.bot:
-                    await webhook.edit_message(message.id,
-                                               content=get_mes(after.content),
-                                               attachments=mfile)
+                if message.content == get_mes(before.content) and message.author.bot:
+                    await webhook.edit_message(message.id,content=get_mes(after.content),attachments=mfile)
 
 @client.event
 async def on_message_delete(msg):
@@ -191,8 +182,7 @@ async def on_message_delete(msg):
             for w in wkl:
                 if w.url == data[x]["url"]:
                     webhook = w
-            async for message in channel.history(
-                    after=msg.created_at, before=timestamp):
+            async for message in channel.history(after=msg.created_at, before=timestamp):
                 if message.content == get_mes(msg.content) and message.author.bot:
                     await webhook.delete_message(message.id)
 
