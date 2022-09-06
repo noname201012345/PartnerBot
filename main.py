@@ -181,9 +181,16 @@ async def on_message_edit(before, after):
                                 break
             async for message in channel.history(before=after.edited_at, after=before.created_at):
                 if before.type == discord.MessageType.reply:
-                    if message.content == get_rfmess(before) and message.author.bot:
-                        await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
-                        break
+                    print(msg.reference.resolved)
+                    if msg.reference.resolved == discord.DeletedReferencedMessage:
+                        print(True)
+                        if message.content == get_rfdel(before) and message.author.bot:
+                            await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
+                            break
+                    else:
+                        if message.content == get_rfmess(before) and message.author.bot:
+                            await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
+                            break
                 else:
                     if message.content == before.content and message.author.bot:
                         await webhook.edit_message(message.id,content=after.content,attachments=mfile)
