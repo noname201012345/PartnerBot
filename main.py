@@ -31,7 +31,7 @@ def get_rfmess(msg):
     new_string = f"> <@{ref.author.id}>: {ref.content}\n{message}"
     return new_string
 
-def get_rfbefore(msg,before):
+def get_rfbefore(msg, before):
     message = msg.content
     new_string = f"> <@{before.author.id}>: {before.content}\n{message}"
     return new_string
@@ -171,7 +171,7 @@ async def on_message_edit(before, after):
                     webhook = w
             async for message in tchannel.history(before=after.edited_at, after=before.created_at):
                 if message.type == discord.MessageType.reply:
-                    print(True)
+                    print(get_rfbefore(message,before))
                     if message.reference.resolved.id == after.id:
                         async for msg in channel.history(before=after.edited_at, after=before.created_at):
                             if msg.content == get_rfbefore(message,before) and message.author.bot:
