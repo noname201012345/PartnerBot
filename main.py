@@ -205,6 +205,7 @@ async def on_message_edit(before, after):
                                 rfile = []
                                 for x in msg.attachments:
                                     rfile.append(await x.to_file())
+                                print(get_rfmess(message))
                                 await webhook.edit_message(msg.id,content=get_rfmess(message),attachments=rfile)
                                 break
             async for message in channel.history(before=after.edited_at, after=before.created_at):
@@ -215,7 +216,6 @@ async def on_message_edit(before, after):
                             break
                     else:
                         if message.content == get_rfmess(before) and message.author.bot:
-                            print(get_rfmess(before))
                             await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
                             break
                 else:
@@ -258,7 +258,6 @@ async def on_message_delete(msg):
                             break
                     else:
                         if message.content == get_rfmess(msg) and message.author.bot:
-                            print(get_rfmess(msg))
                             await webhook.delete_message(message.id)
                             break
                 else:
