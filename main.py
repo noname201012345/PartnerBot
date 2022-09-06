@@ -218,9 +218,14 @@ async def on_message_delete(msg):
                                 break
             async for message in channel.history(after=msg.created_at, before=timestamp):
                 if msg.type == discord.MessageType.reply:
-                    if message.content == get_rfmess(msg) and message.author.bot:
-                        await webhook.delete_message(message.id)
-                        break
+                    if msg.reference.resolved == discord.DeletedReferencedMessage:
+                        if message.content == get_rfdel(msg) and message.author.bot:
+                            await webhook.delete_message(message.id)
+                            break
+                    else:
+                        if message.content == get_rfmess(msg) and message.author.bot:
+                            await webhook.delete_message(message.id)
+                            break
                 else:
                     if message.content == msg.content and message.author.bot:
                         await webhook.delete_message(message.id)
