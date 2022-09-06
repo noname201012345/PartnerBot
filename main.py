@@ -144,14 +144,8 @@ async def on_message(message):
                 aurl = webhook.default_avatar
             else:
                 aurl = message.author.avatar.url
-            if message.author.nick != message.author.name:
                 await webhook.send(get_mes(message.content),
-                                   username=message.author.nick,
-                                   avatar_url=aurl,
-                                   files=mfile)
-            else:
-                await webhook.send(get_mes(message.content),
-                                   username=message.author.name,
+                                   username=message.author.display_name,
                                    avatar_url=aurl,
                                    files=mfile)
 
