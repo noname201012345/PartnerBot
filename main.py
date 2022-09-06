@@ -197,19 +197,14 @@ async def on_message_edit(before, after):
             for w in wkl:
                 if w.url == data[x]["url"]:
                     webhook = w
-            async for message in tchannel.history(before=after.edited_at, after=before.created_at):
+            async for message in tchannel.history(after=before.created_at):
                 if message.type == discord.MessageType.reply:
                     if message.reference.resolved.id == after.id:
-                        async for msg in channel.history(before=after.edited_at, after=before.created_at):
+                        async for msg in channel.history(after=before.created_at):
                             if msg.content == get_rfbefore(message,before) and msg.author.bot:
-                                rfile = []
-                                for x in msg.attachments:
-                                    rfile.append(await x.to_file())
-                                print(get_rfmess(message))
-                                print(get_rfbefore(message,message.reference.resolved))
-                                await webhook.edit_message(msg.id,content=get_rfmess(message),attachments=rfile)
+                                await webhook.edit_message(msg.id,content=get_rfmess(message))
                                 break
-            async for message in channel.history(before=after.edited_at, after=before.created_at):
+            async for message in channel.history(after=before.created_at):
                 if before.type == discord.MessageType.reply:
                     if before.reference.cached_message == None:
                         if message.content == get_rfdel(before) and message.author.bot:
@@ -241,17 +236,14 @@ async def on_message_delete(msg):
                 if w.url == data[x]["url"]:
                     webhook = w
             
-            async for message in tchannel.history(after=msg.created_at, before=timestamp):
+            async for message in tchannel.history(after=msg.created_at):
                 if message.type == discord.MessageType.reply:
                     if message.reference.resolved.id == msg.id:
-                        async for mess in channel.history(after=msg.created_at, before=timestamp):
+                        async for mess in channel.history(after=msg.created_at):
                             if mess.content == get_rfbefore(message,msg) and mess.author.bot:
-                                rfile = []
-                                for x in msg.attachments:
-                                    rfile.append(await x.to_file())
-                                await webhook.edit_message(mess.id,content=get_rfdel(message),attachments=rfile)
+                                await webhook.edit_message(mess.id,content=get_rfdel(message))
                                 break
-            async for message in channel.history(after=msg.created_at, before=timestamp):
+            async for message in channel.history(after=msg.created_at):
                 if msg.type == discord.MessageType.reply:
                     if msg.reference.cached_message == None:
                         if message.content == get_rfdel(msg) and message.author.bot:
