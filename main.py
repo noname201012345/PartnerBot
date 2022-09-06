@@ -206,6 +206,7 @@ async def on_message_edit(before, after):
                                 for x in msg.attachments:
                                     rfile.append(await x.to_file())
                                 print(get_rfmess(message))
+                                print(get_rfbefore(message,message.reference.resolved))
                                 await webhook.edit_message(msg.id,content=get_rfmess(message),attachments=rfile)
                                 break
             async for message in channel.history(before=after.edited_at, after=before.created_at):
