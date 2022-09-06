@@ -174,6 +174,7 @@ async def on_message_edit(before, after):
                     if message.reference.resolved.id == after.id:
                         async for msg in channel.history(before=after.edited_at, after=before.created_at):
                             if msg.content == get_rfbefore(message,before) and message.author.bot:
+                                print(True)
                                 rfile = []
                                 for x in msg.attachments:
                                     rfile.append(await x.to_file())
