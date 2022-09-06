@@ -195,7 +195,7 @@ async def on_message_edit(before, after):
             async for message in channel.history(before=after.edited_at, after=before.created_at):
                 if message.content == get_mes(before.content) and message.author.bot:
                     mesloc.append(message)
-            await webhook.edit_message(mesloc[index].id,content=get_mes(after.content),attachments=mfile)
+            await webhook.edit_message(mesloc[ind].id,content=get_mes(after.content),attachments=mfile)
 
 @client.event
 async def on_message_delete(msg):
