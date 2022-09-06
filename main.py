@@ -164,7 +164,7 @@ async def on_message(message):
                 aurl = message.author.avatar.url
             await webhook.send(get_mes(message.content),username=message.author.display_name,avatar_url=aurl,files=mfile)
             if message.type == discord.MessageType.reply:
-                print(True)
+                message.to_reference()
 
 
 @client.event
