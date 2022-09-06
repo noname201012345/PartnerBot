@@ -178,14 +178,23 @@ async def on_message_edit(before, after):
     if not after.author.bot and after.channel.id == tcha:
         for x in partner:
             channel = client.get_channel(data[x]["channel"])
+            tchannel = client.get_channel(tcha)
             wkl = await channel.webhooks()
+            mesloc = []
             for w in wkl:
                 if w.url == data[x]["url"]:
                     webhook = w
-            async for message in channel.history(
-                    before=after.edited_at, after=before.created_at):
+            async for mess in tchannel.history(before=after.edited_at, after=before.created_at):
+                if mess.content == before.content and not mess.author.bot:
+                    mesloc.append(mess)
+            for m in mesloc:
+                if m.id == before.id:
+                    index = mesloc.index(m)
+            mesloc.clear()
+            async for message in channel.history(before=after.edited_at, after=before.created_at):
                 if message.content == get_mes(before.content) and message.author.bot:
-                    await webhook.edit_message(message.id,content=get_mes(after.content),attachments=mfile)
+                    mesloc.append(message)
+            await webhook.edit_message(mesloc[index].id,content=get_mes(after.content),attachments=mfile)
 
 @client.event
 async def on_message_delete(msg):
@@ -205,6 +214,7 @@ async def on_message_delete(msg):
             async for message in channel.history(after=msg.created_at, before=timestamp):
                 if message.content == get_mes(msg.content) and message.author.bot:
                     await webhook.delete_message(message.id)
+                    break
 
 
 token = os.getenv("token")
