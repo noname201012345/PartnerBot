@@ -93,10 +93,11 @@ async def add(ctx, partner):
         with open("data.json", "w") as f:
             json.dump(data, f)
         r = requests.get(datalink,headers=header)
-        sh=r.json()["sha"]
-        base64S= base64.b64encode(bytes(data, "utf-8"))
-        rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
-        response = requests.put(datalink, data=json.dumps(rjson), headers=header)
+        print(r.json())
+        #sh=r.json()["sha"]
+        #base64S= base64.b64encode(bytes(data, "utf-8"))
+        #rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+        #response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     except:
         data[guild] = {}
         data[guild]["channel"] = ctx.channel.id
@@ -107,10 +108,11 @@ async def add(ctx, partner):
         with open("data.json", "w") as f:
             json.dump(data, f)
         r = requests.get(datalink,headers=header)
-        sh=r.json()["sha"]
-        base64S= base64.b64encode(bytes(data, "utf-8"))
-        rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
-        response = requests.put(datalink, data=json.dumps(rjson), headers=header)
+        print(r.json())
+        #sh=r.json()["sha"]
+        #base64S= base64.b64encode(bytes(data, "utf-8"))
+        #rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+        #response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     await ctx.send("connected!")
 
 
@@ -129,10 +131,11 @@ async def remove(ctx, partner):
             with open("data.json", "w") as f:
                 json.dump(data, f)    
             r = requests.get(datalink,headers=header)
-            sh=r.json()["sha"]
-            base64S= base64.b64encode(bytes(data, "utf-8"))
-            rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
-            response = requests.put(datalink, data=json.dumps(rjson), headers=header)
+            print(r.json())
+            #sh=r.json()["sha"]
+            #base64S= base64.b64encode(bytes(data, "utf-8"))
+            #rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+            #response = requests.put(datalink, data=json.dumps(rjson), headers=header)
     except:
         ctx.send("you didn't add yet!")
 
