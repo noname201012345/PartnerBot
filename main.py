@@ -173,8 +173,7 @@ async def on_message_edit(before, after):
                 if message.type == discord.MessageType.reply:
                     if message.reference.resolved.id == after.id:
                         async for msg in channel.history(before=after.edited_at, after=before.created_at):
-                            print(f"{msg.content} : {get_rfbefore(message,before)}")
-                            if msg.content == get_rfbefore(message,before) and message.author.bot:
+                            if msg.content == get_rfbefore(message,before) and msg.author.bot:
                                 rfile = []
                                 for x in msg.attachments:
                                     rfile.append(await x.to_file())
@@ -211,7 +210,7 @@ async def on_message_delete(msg):
                 if message.type == discord.MessageType.reply:
                     if message.reference.resolved.id == msg.id:
                         async for mess in channel.history(after=msg.created_at, before=timestamp):
-                            if mess.content == get_rfbefore(message,msg) and message.author.bot:
+                            if mess.content == get_rfbefore(message,msg) and mess.author.bot:
                                 rfile = []
                                 for x in msg.attachments:
                                     rfile.append(await x.to_file())
