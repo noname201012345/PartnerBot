@@ -33,11 +33,11 @@ def get_rfmess(msg):
         rc = ref.content
         start = rc.find("\n") + 1
         new_string += rc[0:(start-1)]
-        new_string += "\n> "
+        new_string += " "
         while rc.find("\n",start) != -1:
             end = rc.find("\n",start)
             new_string += rc[start:end]
-            new_string += "\n> "
+            new_string += " "
             start = end + 1
         new_string += rc[start:len(rc)]
     else:
@@ -52,11 +52,11 @@ def get_rfbefore(msg, before):
         rc = before.content
         start = rc.find("\n") + 1
         new_string += rc[0:(start-1)]
-        new_string += "\n> "
+        new_string += " "
         while rc.find("\n",start) != -1:
             end = rc.find("\n",start)
             new_string += rc[start:end]
-            new_string += "\n> "
+            new_string += " "
             start = end + 1
         new_string += rc[start:len(rc)]
     else:
