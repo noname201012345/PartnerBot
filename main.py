@@ -181,7 +181,7 @@ async def on_message_edit(before, after):
                                 break
             async for message in channel.history(before=after.edited_at, after=before.created_at):
                 if before.type == discord.MessageType.reply:
-                    print(before.reference.resolved)
+                    print(before.reference.cached_message)
                     if before.reference.resolved == discord.DeletedReferencedMessage:
                         print(True)
                         if message.content == get_rfdel(before) and message.author.bot:
