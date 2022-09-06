@@ -206,12 +206,12 @@ async def on_message_edit(before, after):
                                 break
             async for message in channel.history(after=before.created_at):
                 if before.type == discord.MessageType.reply:
-                    print(before.reference.cached_message)
                     if before.reference.cached_message == None:
                         if message.content == get_rfdel(before) and message.author.bot:
                             await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                             break
                     else:
+                        print(before.reference.cached_message)
                         if message.content == get_rfmess(before) and message.author.bot:
                             await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
                             break
