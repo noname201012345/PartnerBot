@@ -69,7 +69,7 @@ def delref_only():
 
 def get_rfbefore(msg, before):
     message = msg.content
-    new_string = f"> @{ref.author.display_name}: "
+    new_string = f"> @{before.author.display_name}: "
     if "\n" in before.content:
         rc = before.content
         start = rc.find("\n") + 1
