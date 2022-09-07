@@ -28,7 +28,7 @@ async def on_ready():
 def get_rfmess(msg):
     message = msg.content
     ref = msg.reference.cached_message
-    new_string = f"> @{ref.author.display_name}: "
+    new_string = f"> **{ref.author.display_name}**: "
     if "\n" in ref.content:
         rc = ref.content
         start = rc.find("\n") + 1
@@ -47,7 +47,7 @@ def get_rfmess(msg):
 
 def get_rfbefore(msg, before):
     message = msg.content
-    new_string = f"> @{before.author.display_name}: "
+    new_string = f"> **{before.author.display_name}**: "
     if "\n" in before.content:
         rc = before.content
         start = rc.find("\n") + 1
@@ -67,7 +67,7 @@ def get_rfbefore(msg, before):
 def grf(msg):
     message = msg.content
     ref = msg.reference.cached_message
-    new_string = f"> @{ref.author.display_name}: "
+    new_string = f"> **{ref.author.display_name}**: "
     if "\n" in ref.content:
         rc = ref.content
         start = rc.find("\n") + 1
@@ -85,7 +85,7 @@ def grf(msg):
     
 def grfb(msg, before):
     message = msg.content
-    new_string = f"> @{before.author.display_name}: "
+    new_string = f"> **{before.author.display_name}**: "
     if "\n" in before.content:
         rc = before.content
         start = rc.find("\n") + 1
