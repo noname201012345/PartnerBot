@@ -311,7 +311,7 @@ async def on_message_edit(before, after):
                                 if msg.content == grfb(message,before) and msg.author.bot:
                                     await webhook.edit_message(msg.id,content=get_rfmess(message))
                                     break
-                if message.author.bot and message.content.startwith(to_ref(before)):
+                if message.author.bot and message.content.startswith(to_ref(before)):
                     async for msg in channel.history(after=before.created_at):
                         if len(msg.content) != 0:
                             if get_rfpe(msg) == message.content:
@@ -369,7 +369,7 @@ async def on_message_delete(msg):
                             if mess.content == get_rfbefore(message,msg) and mess.author.bot:
                                 await webhook.edit_message(mess.id,content=get_rfdel(message))
                                 break
-                if message.author.bot and message.content.startwith(to_ref(msg)):
+                if message.author.bot and message.content.startswith(to_ref(msg)):
                     async for mess in channel.history(after=msg.created_at):
                         if len(mess.content) != 0:
                             if get_rfpe(mess) == message.content:
