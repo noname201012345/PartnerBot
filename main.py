@@ -28,7 +28,7 @@ async def on_ready():
 def get_rfmess(msg):
     message = msg.content
     ref = msg.reference.cached_message
-    new_string = f"> <@{ref.author.id}>: "
+    new_string = f"> @{ref.author.display_name}: "
     if "\n" in ref.content:
         rc = ref.content
         start = rc.find("\n") + 1
@@ -45,9 +45,31 @@ def get_rfmess(msg):
     new_string += f"\n{message}"
     return new_string
 
+def ref_only(msg):
+    ref = msg.reference.cached_message
+    new_string = f"> @{ref.author.display_name}: "
+    if "\n" in ref.content:
+        rc = ref.content
+        start = rc.find("\n") + 1
+        new_string += rc[0:(start-1)]
+        new_string += " "
+        while rc.find("\n",start) != -1:
+            end = rc.find("\n",start)
+            new_string += rc[start:end]
+            new_string += " "
+            start = end + 1
+        new_string += rc[start:len(rc)]
+    else:
+        new_string += f"{ref.content}"
+    return new_string
+
+def delref_only():
+    new_string = "> Deleted Message\n"
+    return new_string
+
 def get_rfbefore(msg, before):
     message = msg.content
-    new_string = f"> <@{before.author.id}>: "
+    new_string = f"> @{ref.author.display_name}: "
     if "\n" in before.content:
         rc = before.content
         start = rc.find("\n") + 1
@@ -212,7 +234,7 @@ async def on_message_edit(before, after):
                                 await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                                 break
                         else:
-                            if message.content == get_rfdel(before) and message.author.bot and message.attachments == before.attachments:
+                            if message.content == delref_only(before) and message.author.bot and message.attachments == before.attachments:
                                 await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                                 break
                     else:
@@ -221,7 +243,7 @@ async def on_message_edit(before, after):
                                 await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
                                 break
                         else:
-                            if message.content == get_rfmess(before) and message.author.bot and message.attachments == before.attachments:
+                            if message.content == ref_only(before) and message.author.bot and message.attachments == before.attachments:
                                 await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
                                 break
                 else:
@@ -265,7 +287,7 @@ async def on_message_delete(msg):
                                 await webhook.delete_message(message.id)
                                 break
                         else:
-                            if message.content == get_rfdel(msg) and message.author.bot and message.attachments == msg.attachments:
+                            if message.content == delref_only(msg) and message.author.bot and message.attachments == msg.attachments:
                                 await webhook.delete_message(message.id)
                                 break
                     else:
@@ -274,7 +296,7 @@ async def on_message_delete(msg):
                                 await webhook.delete_message(message.id)
                                 break
                         else:
-                            if message.content == get_rfmess(msg) and message.author.bot and message.attachments == msg.attachments:
+                            if message.content == ref_only(msg) and message.author.bot and message.attachments == msg.attachments:
                                 await webhook.delete_message(message.id)
                                 break
                 else:
