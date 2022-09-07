@@ -387,7 +387,7 @@ async def on_message_delete(msg):
                 if msg.type == discord.MessageType.reply:
                     if msg.reference.cached_message == None:
                         if len(msg.content)!=0:
-                            if message.content == get_rfmess(msg) and message.author.bot:
+                            if message.content == get_rfdel(msg) and message.author.bot:
                                 await webhook.delete_message(message.id)
                                 break
                         else:
