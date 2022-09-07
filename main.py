@@ -313,11 +313,11 @@ async def on_message_edit(before, after):
                                     break
                 if message.author.bot and message.content.startswith(to_ref(before)):
                     async for msg in channel.history(after=before.created_at):
-                        if len(msg.content) != 0:
+                        if len(msg.content) != 0 and msg.type == discord.MessageType.reply:
                             if get_rfpe(msg) == message.content:
                                 await twebhook.edit_message(message.id,content=get_rfmess(msg))
                                 break
-                        else:
+                        elif len(msg.content) == 0 and msg.type == discord.MessageType.reply:
                             if grfpe(msg) == message.content:
                                 await twebhook.edit_message(message.id,content=get_rfmess(msg))
                                 break
@@ -371,11 +371,11 @@ async def on_message_delete(msg):
                                 break
                 if message.author.bot and message.content.startswith(to_ref(msg)):
                     async for mess in channel.history(after=msg.created_at):
-                        if len(mess.content) != 0:
+                        if len(mess.content) != 0 and mess.type == discord.MessageType.reply:
                             if get_rfpe(mess) == message.content:
                                 await twebhook.edit_message(message.id,content=get_rfdel(mess))
                                 break
-                        else:
+                        elif len(mess.content) == 0 and mess.type == discord.MessageType.reply:
                             if grfpe(mess) == message.content:
                                 await twebhook.edit_message(message.id,content=get_rfdel(mess))
                                 break
