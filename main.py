@@ -234,7 +234,7 @@ async def on_message_edit(before, after):
                                 await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                                 break
                         else:
-                            if message.content == delref_only(before) and message.author.bot and message.attachments == before.attachments:
+                            if message.content == delref_only() and message.author.bot and message.attachments == before.attachments:
                                 await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                                 break
                     else:
@@ -287,7 +287,7 @@ async def on_message_delete(msg):
                                 await webhook.delete_message(message.id)
                                 break
                         else:
-                            if message.content == delref_only(msg) and message.author.bot and message.attachments == msg.attachments:
+                            if message.content == delref_only() and message.author.bot and message.attachments == msg.attachments:
                                 await webhook.delete_message(message.id)
                                 break
                     else:
