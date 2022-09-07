@@ -27,7 +27,7 @@ async def on_ready():
 
 def get_rfmess(msg):
     message = msg.content
-    ref = msg.reference.resolved
+    ref = msg.reference.cached_message
     new_string = f"> <@{ref.author.id}>: "
     if "\n" in ref.content:
         rc = ref.content
