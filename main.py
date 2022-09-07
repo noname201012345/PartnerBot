@@ -238,7 +238,7 @@ async def on_message_edit(before, after):
                                 await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                                 break
                     else:
-                        if before.content == None:
+                        if len(before.content)==0:
                             print(f"{message.content} | {before.content} | {ref_only(before)}")
                         if before.content != None:
                             if message.content == get_rfmess(before) and message.author.bot:
