@@ -201,6 +201,7 @@ async def on_message_edit(before, after):
                 if message.type == discord.MessageType.reply:
                     if message.reference.resolved.id == after.id:
                         async for msg in channel.history(after=before.created_at):
+                            print(f"{msg.content} | {get_rfbefore(message,before)}")
                             if msg.content == get_rfbefore(message,before) and msg.author.bot:
                                 await webhook.edit_message(msg.id,content=get_rfmess(message))
                                 break
