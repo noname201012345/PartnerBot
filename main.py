@@ -63,6 +63,48 @@ def get_rfbefore(msg, before):
         new_string += f"{before.content}"
     new_string += f"\n{message}"
     return new_string
+
+def grf(msg):
+    message = msg.content
+    ref = msg.reference.cached_message
+    new_string = f"> @{ref.author.display_name}: "
+    if "\n" in ref.content:
+        rc = ref.content
+        start = rc.find("\n") + 1
+        new_string += rc[0:(start-1)]
+        new_string += " "
+        while rc.find("\n",start) != -1:
+            end = rc.find("\n",start)
+            new_string += rc[start:end]
+            new_string += " "
+            start = end + 1
+        new_string += rc[start:len(rc)]
+    else:
+        new_string += f"{ref.content}"
+    return new_string
+    
+def grfb(msg, before):
+    message = msg.content
+    new_string = f"> @{before.author.display_name}: "
+    if "\n" in before.content:
+        rc = before.content
+        start = rc.find("\n") + 1
+        new_string += rc[0:(start-1)]
+        new_string += " "
+        while rc.find("\n",start) != -1:
+            end = rc.find("\n",start)
+            new_string += rc[start:end]
+            new_string += " "
+            start = end + 1
+        new_string += rc[start:len(rc)]
+    else:
+        new_string += f"{before.content}"
+    return new_string
+    
+
+def grfd():
+    new_string = f"> Deleted Message"
+    return new_string
     
 def get_rfdel(msg):
     message = msg.content
@@ -201,20 +243,34 @@ async def on_message_edit(before, after):
                 if message.type == discord.MessageType.reply:
                     if message.reference.resolved.id == after.id:
                         async for msg in channel.history(after=before.created_at):
-                            print(f"{msg.content} | {get_rfbefore(message,before)}")
-                            if msg.content == get_rfbefore(message,before) and msg.author.bot:
-                                await webhook.edit_message(msg.id,content=get_rfmess(message))
-                                break
+                            if len(message.content) != 0:
+                                if msg.content == get_rfbefore(message,before) and msg.author.bot:
+                                    await webhook.edit_message(msg.id,content=get_rfmess(message))
+                                    break
+                            else:
+                                if msg.content == grfb(message,before) and msg.author.bot:
+                                    await webhook.edit_message(msg.id,content=get_rfmess(message))
+                                    break
             async for message in channel.history(after=before.created_at):
                 if before.type == discord.MessageType.reply:
                     if before.reference.cached_message == None:
-                        if message.content == get_rfdel(before) and message.author.bot:
-                            await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
-                            break
+                        if len(before.content) != 0:
+                            if message.content == get_rfdel(before) and message.author.bot:
+                                await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
+                                break
+                        else:
+                            if message.content == grfd() and message.author.bot:
+                                await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
+                                break
                     else:
-                        if message.content == get_rfmess(before) and message.author.bot:
-                            await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
-                            break
+                        if len(before.content) != 0:
+                            if message.content == get_rfmess(before) and message.author.bot:
+                                await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
+                                break
+                        else:
+                            if message.content == grf(before) and message.author.bot:
+                                await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
+                                break
                 else:
                     if message.content == before.content and message.author.bot:
                         await webhook.edit_message(message.id,content=after.content,attachments=mfile)
@@ -246,13 +302,23 @@ async def on_message_delete(msg):
             async for message in channel.history(after=msg.created_at):
                 if msg.type == discord.MessageType.reply:
                     if msg.reference.cached_message == None:
-                        if message.content == get_rfdel(msg) and message.author.bot:
-                            await webhook.delete_message(message.id)
-                            break
+                        if len(msg.content)!=0:
+                            if message.content == get_rfmess(msg) and message.author.bot:
+                                await webhook.delete_message(message.id)
+                                break
+                        else:
+                            if message.content == grfd() and message.author.bot:
+                                await webhook.delete_message(message.id)
+                                break
                     else:
-                        if message.content == get_rfmess(msg) and message.author.bot:
-                            await webhook.delete_message(message.id)
-                            break
+                        if len(msg.content)!=0:
+                            if message.content == get_rfmess(msg) and message.author.bot:
+                                await webhook.delete_message(message.id)
+                                break
+                        else:
+                            if message.content == grf(msg) and message.author.bot:
+                                await webhook.delete_message(message.id)
+                                break
                 else:
                     if message.content == msg.content and message.author.bot:
                         await webhook.delete_message(message.id)
