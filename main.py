@@ -45,28 +45,6 @@ def get_rfmess(msg):
     new_string += f"\n{message}"
     return new_string
 
-def ref_only(msg):
-    ref = msg.reference.cached_message
-    new_string = f"> @{ref.author.display_name}: "
-    if "\n" in ref.content:
-        rc = ref.content
-        start = rc.find("\n") + 1
-        new_string += rc[0:(start-1)]
-        new_string += " "
-        while rc.find("\n",start) != -1:
-            end = rc.find("\n",start)
-            new_string += rc[start:end]
-            new_string += " "
-            start = end + 1
-        new_string += rc[start:len(rc)]
-    else:
-        new_string += f"{ref.content}"
-    return new_string
-
-def delref_only():
-    new_string = "> Deleted Message\n"
-    return new_string
-
 def get_rfbefore(msg, before):
     message = msg.content
     new_string = f"> @{before.author.display_name}: "
@@ -229,33 +207,17 @@ async def on_message_edit(before, after):
             async for message in channel.history(after=before.created_at):
                 if before.type == discord.MessageType.reply:
                     if before.reference.cached_message == None:
-                        if len(before.content)!=0:
-                            if message.content == get_rfdel(before) and message.author.bot:
-                                await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
-                                break
-                        else:
-                            if message.content == delref_only() and message.author.bot and message.attachments == before.attachments:
-                                await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
-                                break
+                        if message.content == get_rfdel(before) and message.author.bot:
+                            await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
+                            break
                     else:
-                        if len(before.content)!=0:
-                            print(len(before.content))
-                            if message.content == get_rfmess(before) and message.author.bot:
-                                await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
-                                break
-                        else:
-                            if message.content == ref_only(before) and message.author.bot and message.attachments == before.attachments:
-                                await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
-                                break
+                        if message.content == get_rfmess(before) and message.author.bot:
+                            await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
+                            break
                 else:
-                    if len(before.content)!=0:
-                        if message.content == before.content and message.author.bot:
-                            await webhook.edit_message(message.id,content=after.content,attachments=mfile)
-                            break
-                    else:
-                        if message.author.bot and message.attachments == before.attachments:
-                            await webhook.edit_message(message.id,content=after.content,attachments=mfile)
-                            break
+                    if message.content == before.content and message.author.bot:
+                        await webhook.edit_message(message.id,content=after.content,attachments=mfile)
+                        break
 
 @client.event
 async def on_message_delete(msg):
@@ -283,32 +245,17 @@ async def on_message_delete(msg):
             async for message in channel.history(after=msg.created_at):
                 if msg.type == discord.MessageType.reply:
                     if msg.reference.cached_message == None:
-                        if len(msg.content)!=0:
-                            if message.content == get_rfdel(msg) and message.author.bot:
-                                await webhook.delete_message(message.id)
-                                break
-                        else:
-                            if message.content == delref_only() and message.author.bot and message.attachments == msg.attachments:
-                                await webhook.delete_message(message.id)
-                                break
+                        if message.content == get_rfdel(msg) and message.author.bot:
+                            await webhook.delete_message(message.id)
+                            break
                     else:
-                        if len(msg.content)!=0:
-                            if message.content == get_rfmess(msg) and message.author.bot:
-                                await webhook.delete_message(message.id)
-                                break
-                        else:
-                            if message.content == ref_only(msg) and message.author.bot and message.attachments == msg.attachments:
-                                await webhook.delete_message(message.id)
-                                break
+                        if message.content == get_rfmess(msg) and message.author.bot:
+                            await webhook.delete_message(message.id)
+                            break
                 else:
-                    if len(msg.content)!=0:
-                        if message.content == msg.content and message.author.bot:
-                            await webhook.delete_message(message.id)
-                            break
-                    else:
-                        if message.author.bot and message.attachments == msg.attachments:
-                            await webhook.delete_message(message.id)
-                            break
+                    if message.content == msg.content and message.author.bot:
+                        await webhook.delete_message(message.id)
+                        break
 
 
 token = os.getenv("token")
