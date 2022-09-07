@@ -359,9 +359,13 @@ async def on_message_delete(msg):
             channel = client.get_channel(data[x]["channel"])
             tchannel = client.get_channel(tcha)
             wkl = await channel.webhooks()
+            twkl = await tchannel.webhooks()
             for w in wkl:
                 if w.url == data[x]["url"]:
                     webhook = w
+            for tw in twkl:
+                if tw.url == data[guild]["url"]:
+                    twebhook = tw
             async for message in tchannel.history(after=msg.created_at):
                 if message.type == discord.MessageType.reply:
                     if message.reference.resolved.id == msg.id:
