@@ -24,7 +24,45 @@ datalink = "https://api.github.com/repos/noname201012345/PartnerBot/contents/dat
 async def on_ready():
     print(f'Successfully logged in as {client.user}')
 
+def get_rfpe(msg):
+    message = msg.content
+    ref = msg.reference.resolved
+    new_string = f"> **{ref.author.display_name}**: "
+    if "\n" in ref.content:
+        rc = ref.content
+        start = rc.find("\n") + 1
+        new_string += rc[0:(start-1)]
+        new_string += " "
+        while rc.find("\n",start) != -1:
+            end = rc.find("\n",start)
+            new_string += rc[start:end]
+            new_string += " "
+            start = end + 1
+        new_string += rc[start:len(rc)]
+    else:
+        new_string += f"{ref.content}"
+    new_string += f"\n{message}"
+    return new_string
 
+def grfpe(msg):
+    message = msg.content
+    ref = msg.reference.resolved
+    new_string = f"> **{ref.author.display_name}**: "
+    if "\n" in ref.content:
+        rc = ref.content
+        start = rc.find("\n") + 1
+        new_string += rc[0:(start-1)]
+        new_string += " "
+        while rc.find("\n",start) != -1:
+            end = rc.find("\n",start)
+            new_string += rc[start:end]
+            new_string += " "
+            start = end + 1
+        new_string += rc[start:len(rc)]
+    else:
+        new_string += f"{ref.content}"
+    return new_string
+    
 def get_rfmess(msg):
     message = msg.content
     ref = msg.reference.cached_message
@@ -67,6 +105,24 @@ def get_rfbefore(msg, before):
 def grf(msg):
     message = msg.content
     ref = msg.reference.cached_message
+    new_string = f"> **{ref.author.display_name}**: "
+    if "\n" in ref.content:
+        rc = ref.content
+        start = rc.find("\n") + 1
+        new_string += rc[0:(start-1)]
+        new_string += " "
+        while rc.find("\n",start) != -1:
+            end = rc.find("\n",start)
+            new_string += rc[start:end]
+            new_string += " "
+            start = end + 1
+        new_string += rc[start:len(rc)]
+    else:
+        new_string += f"{ref.content}"
+    return new_string
+    
+def to_ref(msg):
+    ref = msg
     new_string = f"> **{ref.author.display_name}**: "
     if "\n" in ref.content:
         rc = ref.content
@@ -236,9 +292,13 @@ async def on_message_edit(before, after):
             channel = client.get_channel(data[x]["channel"])
             tchannel = client.get_channel(tcha)
             wkl = await channel.webhooks()
+            twkl = await tchannel.webhooks()
             for w in wkl:
                 if w.url == data[x]["url"]:
                     webhook = w
+            for tw in twkl:
+                if tw.url == data[guild]["url"]:
+                    twebhook = tw
             async for message in tchannel.history(after=before.created_at):
                 if message.type == discord.MessageType.reply:
                     if message.reference.resolved.id == after.id:
@@ -251,6 +311,16 @@ async def on_message_edit(before, after):
                                 if msg.content == grfb(message,before) and msg.author.bot:
                                     await webhook.edit_message(msg.id,content=get_rfmess(message))
                                     break
+                if message.author.bot and message.content.startwith(to_ref(before)):
+                    async for msg in channel.history(after=before.created_at):
+                        if len(msg.content) != 0:
+                            if get_rfpe(msg) == message.content:
+                                await twebhook.edit_message(message.id,content=get_rfmess(msg))
+                                break
+                        else:
+                            if grfpe(msg) == message.content:
+                                await twebhook.edit_message(message.id,content=get_rfmess(msg))
+                                break
             async for message in channel.history(after=before.created_at):
                 if before.type == discord.MessageType.reply:
                     if before.reference.cached_message == None:
@@ -298,6 +368,16 @@ async def on_message_delete(msg):
                         async for mess in channel.history(after=msg.created_at):
                             if mess.content == get_rfbefore(message,msg) and mess.author.bot:
                                 await webhook.edit_message(mess.id,content=get_rfdel(message))
+                                break
+                if message.author.bot and message.content.startwith(to_ref(msg)):
+                    async for mess in channel.history(after=msg.created_at):
+                        if len(mess.content) != 0:
+                            if get_rfpe(mess) == message.content:
+                                await twebhook.edit_message(message.id,content=get_rfdel(mess))
+                                break
+                        else:
+                            if grfpe(mess) == message.content:
+                                await twebhook.edit_message(message.id,content=get_rfdel(mess))
                                 break
             async for message in channel.history(after=msg.created_at):
                 if msg.type == discord.MessageType.reply:
