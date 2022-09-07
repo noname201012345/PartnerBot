@@ -315,11 +315,11 @@ async def on_message_edit(before, after):
                     async for msg in channel.history(after=before.created_at):
                         if len(msg.content) != 0 and msg.type == discord.MessageType.reply:
                             if get_rfpe(msg) == message.content:
-                                await twebhook.edit_message(message.id,content=get_rfmess(msg))
+                                await twebhook.edit_message(message.id,content=get_rfbefore(msg,after))
                                 break
                         elif len(msg.content) == 0 and msg.type == discord.MessageType.reply:
                             if grfpe(msg) == message.content:
-                                await twebhook.edit_message(message.id,content=get_rfmess(msg))
+                                await twebhook.edit_message(message.id,content=get_rfbefore(msg,after))
                                 break
             async for message in channel.history(after=before.created_at):
                 if before.type == discord.MessageType.reply:
