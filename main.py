@@ -393,5 +393,5 @@ async def on_message_delete(msg):
                             break
 
 
-token = os.getenv("ptoken")
+token = os.getenv("token")
 client.run(token)
