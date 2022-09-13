@@ -248,7 +248,7 @@ async def msview(ctx):
     for x in room:
         if count > page*10:
             break
-        emb.add_field(name=f"{list(room).index(x)+1}, {x}",value=f"Số người: {len(x)}",inline=False)
+        emb.add_field(name=f"{list(room).index(x)+1}, {x}",value=f"Số server tham gia: {len(x)}",inline=False)
         count+=1
     async def precallback(interaction):
         nonlocal page,msg
@@ -262,7 +262,7 @@ async def msview(ctx):
                 continue
             if count > page*10:
                 break
-            emb.add_field(name=f"{list(room).index(x)+1}, {x}",value=f"Số người: {len(x)}",inline=False)
+            emb.add_field(name=f"{list(room).index(x)+1}, {x}",value=f"Số server tham gia: {len(x)}",inline=False)
             count+=1
         emb.set_footer(text=f"Trang {page}/{mpage}")
         await msg.edit(embed=emb)
@@ -279,7 +279,7 @@ async def msview(ctx):
                 continue
             if count > page*10:
                 break
-            emb.add_field(name=f"{list(room).index(x)+1}, {x}",value=f"Số người: {len(x)}",inline=False)
+            emb.add_field(name=f"{list(room).index(x)+1}, {x}",value=f"Số server tham gia: {len(x)}",inline=False)
             count+=1
         emb.set_footer(text=f"Trang {page}/{mpage}")
         await msg.edit(embed=emb)
