@@ -300,7 +300,7 @@ async def on_message_edit(before, after):
         mfile.append(await x.to_file())
     if not after.author.bot and after.channel.id == tcha:
         for x in partner:
-            if x == str(message.guild.id):
+            if x == str(after.guild.id):
                 pass
             else:
                 channel = client.get_channel(data[x]["channel"])
@@ -372,7 +372,7 @@ async def on_message_delete(msg):
     partner = mchat[room]
     if not msg.author.bot and msg.channel.id == tcha:
         for x in partner:
-            if x == str(message.guild.id):
+            if x == str(msg.guild.id):
                 pass
             else:
                 channel = client.get_channel(data[x]["channel"])
