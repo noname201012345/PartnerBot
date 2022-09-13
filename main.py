@@ -203,20 +203,20 @@ async def join(ctx, name):
     r = requests.get(link+"data.json",headers=header)
     rm = requests.get(link+"multichat.json",headers=header)
     sh=r.json()["sha"]
-    shm=rm.json(["sha"])
+    shm=rm.json()["sha"]
     base64S= base64.b64encode(bytes(json.dumps(data), "utf-8"))
     base64M= base64.b64encode(bytes(json.dumps(mchat), "utf-8"))
     rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
     rmjson = {"message":"cf", "content":base64M.decode("utf-8"),"sha":shm}
     response = requests.put(link+"data.json", data=json.dumps(rjson), headers=header)
-    response = requests.put(link+"multichat.json", data=json.dumps(rmjson), headers=header)
+    rps = requests.put(link+"multichat.json", data=json.dumps(rmjson), headers=header)
 
 
 
 @client.event
 async def on_message(message):
     await client.process_commands(message)
-    if message.content.startswith("!add") or message.content.startswith("!remove"):
+    if message.content.startswith("!join"):
         await message.delete()
     with open("data.json", "r") as f:
         data = json.load(f)
@@ -393,5 +393,5 @@ async def on_message_delete(msg):
                             break
 
 
-token = os.getenv("token")
+token = os.getenv("ptoken")
 client.run(token)
