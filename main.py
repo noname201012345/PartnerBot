@@ -227,7 +227,7 @@ async def leave(ctx):
         for w in whl:
             if w.url == wurl:
                 webhook = w
-        webhook.delete()
+        await webhook.delete()
         data.pop(guild)
         await ctx.send("Rời phòng thành công")
         with open("data.json", "w") as f:
