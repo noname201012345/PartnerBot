@@ -5,6 +5,7 @@ import requests
 import base64
 from dotenv import load_dotenv
 import os
+import math
 
 load_dotenv()
 
@@ -167,6 +168,7 @@ def get_rfdel(msg):
     return new_string
     
 @client.command()
+@commands.has_guild_permissions(administrator=True)
 async def join(ctx, name):
     with open("data.json", "r") as f:
         data = json.load(f)
@@ -212,6 +214,88 @@ async def join(ctx, name):
     rps = requests.put(link+"multichat.json", data=json.dumps(rmjson), headers=header)
 
 @client.command()
+@commands.has_guild_permissions(administrator=True)
+async def create(ctx,name):
+    with open("multichat.json", "r") as f:
+        mchat = json.load(f)
+    if name in mchat:
+        await ctx.send("Phòng chat đã tồn tại!")
+    else:
+        mchat[name] = []
+        await ctx.send("Tạo phòng chat thành công!")
+        with open("multichat.json", "w") as f:
+            json.dump(mchat, f)
+        rm = requests.get(link+"multichat.json",headers=header)
+        shm=rm.json()["sha"]
+        base64M= base64.b64encode(bytes(json.dumps(mchat), "utf-8"))
+        rmjson = {"message":"cf", "content":base64M.decode("utf-8"),"sha":shm}
+        rps = requests.put(link+"multichat.json", data=json.dumps(rmjson), headers=header)
+        
+@client.command()
+@commands.has_guild_permissions(administrator=True)
+async def msview(ctx):
+    with open("multichat.json", "r") as f:
+        mchat = json.load(f)
+    room=mchat
+    if len(room) > 10:
+        mpage = math.ceil(len(room)/10)
+    else:
+        mpage = 1
+    page = 1
+    emb = discord.Embed(color=0x0049FF,title="Các Phòng Chat Hiện Có:",description=" ")
+    emb.set_footer(text=f"Trang {page}/{mpage}")
+    count = 1
+    for x in room:
+        if count > page*10:
+            break
+        emb.add_field(name=f"{list(room.key()).index(x)+1}, {x}",value=f"Số người: {len(x)}",inline=False)
+        count+=1
+    async def precallback(interaction):
+        nonlocal page,msg
+        if mpage < page:
+            page -= 1
+        emb.clear_fields()
+        count=1
+        for x in room:
+            if count < ((page-1)*10+1):
+                count+=1
+                continue
+            if count > page*10:
+                break
+            emb.add_field(name=f"{list(room.key()).index(x)+1}, {x}",value=f"Số người: {len(x)}",inline=False)
+            count+=1
+        emb.set_footer(text=f"Trang {page}/{mpage}")
+        await msg.edit(embed=emb)
+        await interaction.response.defer()
+    async def nextcallback(interaction):
+        nonlocal page,msg
+        if mpage > page:
+            page += 1
+        emb.clear_fields()
+        count=1
+        for x in room:
+            if count < ((page-1)*10+1):
+                count+=1
+                continue
+            if count > page*10:
+                break
+            emb.add_field(name=f"{list(room.key()).index(x)+1}, {x}",value=f"Số người: {len(x)}",inline=False)
+            count+=1
+        emb.set_footer(text=f"Trang {page}/{mpage}")
+        await msg.edit(embed=emb)
+        await interaction.response.defer()
+    v=discord.ui.View(timeout=180)
+    backB=discord.ui.Button(label="<",style=discord.ButtonStyle.blurple)
+    nextB=discord.ui.Button(label=">",style=discord.ButtonStyle.blurple)
+    backB.callback = precallback
+    nextB.callback = nextcallback
+    v.add_item(backB)
+    v.add_item(nextB)
+    msg = await ctx.send(embed=emb,view=v)
+    
+
+@client.command()
+@commands.has_guild_permissions(administrator=True)
 async def leave(ctx):
     with open("data.json", "r") as f:
         data = json.load(f)
