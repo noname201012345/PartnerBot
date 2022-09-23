@@ -342,32 +342,33 @@ async def on_message(message):
     with open("multichat.json", "r") as f:
         mchat = json.load(f)
     guild = str(message.guild.id)
-    tcha = data[guild]["channel"]
-    room = data[guild]["id"]
-    partner = mchat[room]
-    if not message.author.bot and message.channel.id == tcha:
-        for x in partner:
-            if x == str(message.guild.id):
-                pass
-            else:
-                wurl = data[x]["url"]
-                channel = client.get_channel(data[x]["channel"])
-                whl = await channel.webhooks()
-                for w in whl:
-                    if w.url == wurl:
-                        webhook = w
-                mfile = []
-                for x in message.attachments:
-                    mfile.append(await x.to_file())
-                if message.author.avatar == None:
-                    aurl = webhook.default_avatar
+    if guild in data:
+        tcha = data[guild]["channel"]
+        room = data[guild]["id"]
+        partner = mchat[room]
+        if not message.author.bot and message.channel.id == tcha:
+            for x in partner:
+                if x == str(message.guild.id):
+                    pass
                 else:
-                    aurl = message.author.avatar.url
-                if message.type == discord.MessageType.reply:
-                    await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
-                else:
-                    await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
-
+                    wurl = data[x]["url"]
+                    channel = client.get_channel(data[x]["channel"])
+                    whl = await channel.webhooks()
+                    for w in whl:
+                        if w.url == wurl:
+                            webhook = w
+                    mfile = []
+                    for x in message.attachments:
+                        mfile.append(await x.to_file())
+                    if message.author.avatar == None:
+                        aurl = webhook.default_avatar
+                    else:
+                        aurl = message.author.avatar.url
+                    if message.type == discord.MessageType.reply:
+                        await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+                    else:
+                        await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+    
 
 @client.event
 async def on_message_edit(before, after):
@@ -376,74 +377,75 @@ async def on_message_edit(before, after):
     with open("multichat.json", "r") as f:
         mchat = json.load(f)
     guild = str(before.guild.id)
-    tcha = data[guild]["channel"]
-    room = data[guild]["id"]
-    partner = mchat[room]
-    mfile = []
-    for x in after.attachments:
-        mfile.append(await x.to_file())
-    if not after.author.bot and after.channel.id == tcha:
-        for x in partner:
-            if x == str(after.guild.id):
-                pass
-            else:
-                channel = client.get_channel(data[x]["channel"])
-                tchannel = client.get_channel(tcha)
-                wkl = await channel.webhooks()
-                twkl = await tchannel.webhooks()
-                for w in wkl:
-                    if w.url == data[x]["url"]:
-                        webhook = w
-                for tw in twkl:
-                    if tw.url == data[guild]["url"]:
-                        twebhook = tw
-                async for message in tchannel.history(after=before.created_at):
-                    if message.type == discord.MessageType.reply:
-                        if message.reference.resolved.id == after.id:
+    if guild in data:
+        tcha = data[guild]["channel"]
+        room = data[guild]["id"]
+        partner = mchat[room]
+        mfile = []
+        for x in after.attachments:
+            mfile.append(await x.to_file())
+        if not after.author.bot and after.channel.id == tcha:
+            for x in partner:
+                if x == str(after.guild.id):
+                    pass
+                else:
+                    channel = client.get_channel(data[x]["channel"])
+                    tchannel = client.get_channel(tcha)
+                    wkl = await channel.webhooks()
+                    twkl = await tchannel.webhooks()
+                    for w in wkl:
+                        if w.url == data[x]["url"]:
+                            webhook = w
+                    for tw in twkl:
+                        if tw.url == data[guild]["url"]:
+                            twebhook = tw
+                    async for message in tchannel.history(after=before.created_at):
+                        if message.type == discord.MessageType.reply:
+                            if message.reference.resolved.id == after.id:
+                                async for msg in channel.history(after=before.created_at):
+                                    if len(message.content) != 0:
+                                        if msg.content == get_rfbefore(message,before) and msg.author.bot:
+                                            await webhook.edit_message(msg.id,content=get_rfmess(message))
+                                            break
+                                    else:
+                                        if msg.content == grfb(message,before) and msg.author.bot:
+                                            await webhook.edit_message(msg.id,content=get_rfmess(message))
+                                            break
+                        if message.author.bot and message.content.startswith(to_ref(before)):
                             async for msg in channel.history(after=before.created_at):
-                                if len(message.content) != 0:
-                                    if msg.content == get_rfbefore(message,before) and msg.author.bot:
-                                        await webhook.edit_message(msg.id,content=get_rfmess(message))
+                                if len(msg.content) != 0 and msg.type == discord.MessageType.reply:
+                                    if get_rfpe(msg) == message.content:
+                                        await twebhook.edit_message(message.id,content=get_rfbefore(msg,after))
+                                        break
+                                elif len(msg.content) == 0 and msg.type == discord.MessageType.reply:
+                                    if grfpe(msg) == message.content:
+                                        await twebhook.edit_message(message.id,content=get_rfbefore(msg,after))
+                                        break
+                    async for message in channel.history(after=before.created_at):
+                        if before.type == discord.MessageType.reply:
+                            if before.reference.cached_message == None:
+                                if len(before.content) != 0:
+                                    if message.content == get_rfdel(before) and message.author.bot:
+                                        await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                                         break
                                 else:
-                                    if msg.content == grfb(message,before) and msg.author.bot:
-                                        await webhook.edit_message(msg.id,content=get_rfmess(message))
+                                    if message.content == grfd() and message.author.bot:
+                                        await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
                                         break
-                    if message.author.bot and message.content.startswith(to_ref(before)):
-                        async for msg in channel.history(after=before.created_at):
-                            if len(msg.content) != 0 and msg.type == discord.MessageType.reply:
-                                if get_rfpe(msg) == message.content:
-                                    await twebhook.edit_message(message.id,content=get_rfbefore(msg,after))
-                                    break
-                            elif len(msg.content) == 0 and msg.type == discord.MessageType.reply:
-                                if grfpe(msg) == message.content:
-                                    await twebhook.edit_message(message.id,content=get_rfbefore(msg,after))
-                                    break
-                async for message in channel.history(after=before.created_at):
-                    if before.type == discord.MessageType.reply:
-                        if before.reference.cached_message == None:
-                            if len(before.content) != 0:
-                                if message.content == get_rfdel(before) and message.author.bot:
-                                    await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
-                                    break
                             else:
-                                if message.content == grfd() and message.author.bot:
-                                    await webhook.edit_message(message.id,content=get_rfdel(after),attachments=mfile)
-                                    break
+                                if len(before.content) != 0:
+                                    if message.content == get_rfmess(before) and message.author.bot:
+                                        await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
+                                        break
+                                else:
+                                    if message.content == grf(before) and message.author.bot:
+                                        await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
+                                        break
                         else:
-                            if len(before.content) != 0:
-                                if message.content == get_rfmess(before) and message.author.bot:
-                                    await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
-                                    break
-                            else:
-                                if message.content == grf(before) and message.author.bot:
-                                    await webhook.edit_message(message.id,content=get_rfmess(after),attachments=mfile)
-                                    break
-                    else:
-                        if message.content == before.content and message.author.bot:
-                            await webhook.edit_message(message.id,content=after.content,attachments=mfile)
-                            break
-
+                            if message.content == before.content and message.author.bot:
+                                await webhook.edit_message(message.id,content=after.content,attachments=mfile)
+                                break
+    
 @client.event
 async def on_message_delete(msg):
     with open("data.json", "r") as f:
@@ -451,66 +453,67 @@ async def on_message_delete(msg):
     with open("multichat.json", "r") as f:
         mchat = json.load(f)
     guild = str(msg.guild.id)
-    tcha = data[guild]["channel"]
-    room = data[guild]["id"]
-    partner = mchat[room]
-    if not msg.author.bot and msg.channel.id == tcha:
-        for x in partner:
-            if x == str(msg.guild.id):
-                pass
-            else:
-                channel = client.get_channel(data[x]["channel"])
-                tchannel = client.get_channel(tcha)
-                wkl = await channel.webhooks()
-                twkl = await tchannel.webhooks()
-                for w in wkl:
-                    if w.url == data[x]["url"]:
-                        webhook = w
-                for tw in twkl:
-                    if tw.url == data[guild]["url"]:
-                        twebhook = tw
-                async for message in tchannel.history(after=msg.created_at):
-                    if message.type == discord.MessageType.reply:
-                        if message.reference.resolved.id == msg.id:
+    if guild in data:
+        tcha = data[guild]["channel"]
+        room = data[guild]["id"]
+        partner = mchat[room]
+        if not msg.author.bot and msg.channel.id == tcha:
+            for x in partner:
+                if x == str(msg.guild.id):
+                    pass
+                else:
+                    channel = client.get_channel(data[x]["channel"])
+                    tchannel = client.get_channel(tcha)
+                    wkl = await channel.webhooks()
+                    twkl = await tchannel.webhooks()
+                    for w in wkl:
+                        if w.url == data[x]["url"]:
+                            webhook = w
+                    for tw in twkl:
+                        if tw.url == data[guild]["url"]:
+                            twebhook = tw
+                    async for message in tchannel.history(after=msg.created_at):
+                        if message.type == discord.MessageType.reply:
+                            if message.reference.resolved.id == msg.id:
+                                async for mess in channel.history(after=msg.created_at):
+                                    if mess.content == get_rfbefore(message,msg) and mess.author.bot:
+                                        await webhook.edit_message(mess.id,content=get_rfdel(message))
+                                        break
+                        if message.author.bot and message.content.startswith(to_ref(msg)):
                             async for mess in channel.history(after=msg.created_at):
-                                if mess.content == get_rfbefore(message,msg) and mess.author.bot:
-                                    await webhook.edit_message(mess.id,content=get_rfdel(message))
-                                    break
-                    if message.author.bot and message.content.startswith(to_ref(msg)):
-                        async for mess in channel.history(after=msg.created_at):
-                            if len(mess.content) != 0 and mess.type == discord.MessageType.reply:
-                                if get_rfpe(mess) == message.content:
-                                    await twebhook.edit_message(message.id,content=get_rfdel(mess))
-                                    break
-                            elif len(mess.content) == 0 and mess.type == discord.MessageType.reply:
-                                if grfpe(mess) == message.content:
-                                    await twebhook.edit_message(message.id,content=get_rfdel(mess))
-                                    break
-                async for message in channel.history(after=msg.created_at):
-                    if msg.type == discord.MessageType.reply:
-                        if msg.reference.cached_message == None:
-                            if len(msg.content)!=0:
-                                if message.content == get_rfdel(msg) and message.author.bot:
-                                    await webhook.delete_message(message.id)
-                                    break
+                                if len(mess.content) != 0 and mess.type == discord.MessageType.reply:
+                                    if get_rfpe(mess) == message.content:
+                                        await twebhook.edit_message(message.id,content=get_rfdel(mess))
+                                        break
+                                elif len(mess.content) == 0 and mess.type == discord.MessageType.reply:
+                                    if grfpe(mess) == message.content:
+                                        await twebhook.edit_message(message.id,content=get_rfdel(mess))
+                                        break
+                    async for message in channel.history(after=msg.created_at):
+                        if msg.type == discord.MessageType.reply:
+                            if msg.reference.cached_message == None:
+                                if len(msg.content)!=0:
+                                    if message.content == get_rfdel(msg) and message.author.bot:
+                                        await webhook.delete_message(message.id)
+                                        break
+                                else:
+                                    if message.content == grfd() and message.author.bot:
+                                        await webhook.delete_message(message.id)
+                                        break
                             else:
-                                if message.content == grfd() and message.author.bot:
-                                    await webhook.delete_message(message.id)
-                                    break
+                                if len(msg.content)!=0:
+                                    if message.content == get_rfmess(msg) and message.author.bot:
+                                        await webhook.delete_message(message.id)
+                                        break
+                                else:
+                                    if message.content == grf(msg) and message.author.bot:
+                                        await webhook.delete_message(message.id)
+                                        break
                         else:
-                            if len(msg.content)!=0:
-                                if message.content == get_rfmess(msg) and message.author.bot:
-                                    await webhook.delete_message(message.id)
-                                    break
-                            else:
-                                if message.content == grf(msg) and message.author.bot:
-                                    await webhook.delete_message(message.id)
-                                    break
-                    else:
-                        if message.content == msg.content and message.author.bot:
-                            await webhook.delete_message(message.id)
-                            break
-
+                            if message.content == msg.content and message.author.bot:
+                                await webhook.delete_message(message.id)
+                                break
+    
 
 token = os.getenv("token")
 client.run(token)
