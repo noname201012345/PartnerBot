@@ -363,7 +363,7 @@ async def on_message(message):
                     if message.author.avatar == None:
                         aurl = webhook.default_avatar
                     else:
-                        aurl = message.author.display_avatar.url
+                        aurl = message.author.avatar.url
                     if message.type == discord.MessageType.reply:
                         await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
                     else:
