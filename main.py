@@ -383,8 +383,8 @@ async def on_message_edit(before, after):
                 else:
                     channel = client.get_channel(data[x]["channel"])
                     tchannel = client.get_channel(tcha)
-                    wid = data[x]["url"]
-                    twid = data[guild]["url"]
+                    wid = data[x]["webhook"]
+                    twid = data[guild]["webhook"]
                     webhook = await client.fetch_webhook(wid)
                     twebhook = await client.fetch_webhook(twid)
                     async for message in tchannel.history(after=before.created_at):
@@ -452,8 +452,8 @@ async def on_message_delete(msg):
                 else:
                     channel = client.get_channel(data[x]["channel"])
                     tchannel = client.get_channel(tcha)
-                    wid = data[x]["url"]
-                    twid = data[guild]["url"]
+                    wid = data[x]["webhook"]
+                    twid = data[guild]["webhook"]
                     webhook = await client.fetch_webhook(wid)
                     twebhook = await client.fetch_webhook(twid)
                     async for message in tchannel.history(after=msg.created_at):
