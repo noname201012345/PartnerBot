@@ -307,9 +307,11 @@ async def leave(ctx):
         mchat[room].remove(guild)
         wid = data[guild]["webhook"]
         channel = client.get_channel(data[guild]["channel"])
-        webhook = await client.fetch_webhook(wid)
-        if webhook != None:
+        try:
+            webhook = await client.fetch_webhook(wid)
             await webhook.delete()
+        except:
+            print("deleted webhook!")
         data.pop(guild)
         await ctx.send("Rời phòng thành công")
         with open("data.json", "w") as f:
