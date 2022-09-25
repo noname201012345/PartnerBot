@@ -194,7 +194,7 @@ async def join(ctx, name):
                         data[guild]["channel"] = ctx.channel.id
                         data[guild]["id"] = name
                         webhook = await ctx.channel.create_webhook(name="PartnerBot")
-                        data[guild]["url"] = webhook.url
+                        data[guild]["webhook"] = webhook.id
                         await ctx.send("Tham gia thành công")
                         with open("data.json", "w") as f:
                             json.dump(data, f)
@@ -305,13 +305,11 @@ async def leave(ctx):
     if guild in data:
         room = data[guild]["id"]
         mchat[room].remove(guild)
-        wurl = data[guild]["url"]
+        wid = data[guild]["webhook"]
         channel = client.get_channel(data[guild]["channel"])
-        whl = await channel.webhooks()
-        for w in whl:
-            if w.url == wurl:
-                webhook = w
-        await webhook.delete()
+        webhook = await client.fetch_webhook(wid)
+        if webhook != None:
+            await webhook.delete()
         data.pop(guild)
         await ctx.send("Rời phòng thành công")
         with open("data.json", "w") as f:
@@ -351,12 +349,9 @@ async def on_message(message):
                 if x == str(message.guild.id):
                     pass
                 else:
-                    wurl = data[x]["url"]
+                    wid = data[x]["webhook"]
                     channel = client.get_channel(data[x]["channel"])
-                    whl = await channel.webhooks()
-                    for w in whl:
-                        if w.url == wurl:
-                            webhook = w
+                    webhook = await client.fetch_webhook(wid)
                     mfile = []
                     for x in message.attachments:
                         mfile.append(await x.to_file())
@@ -388,14 +383,10 @@ async def on_message_edit(before, after):
                 else:
                     channel = client.get_channel(data[x]["channel"])
                     tchannel = client.get_channel(tcha)
-                    wkl = await channel.webhooks()
-                    twkl = await tchannel.webhooks()
-                    for w in wkl:
-                        if w.url == data[x]["url"]:
-                            webhook = w
-                    for tw in twkl:
-                        if tw.url == data[guild]["url"]:
-                            twebhook = tw
+                    wid = data[x]["url"]
+                    twid = data[guild]["url"]
+                    webhook = await client.fetch_webhook(wid)
+                    twebhook = await client.fetch_webhook(twid)
                     async for message in tchannel.history(after=before.created_at):
                         if message.type == discord.MessageType.reply:
                             if message.reference.resolved.id == after.id:
@@ -461,14 +452,10 @@ async def on_message_delete(msg):
                 else:
                     channel = client.get_channel(data[x]["channel"])
                     tchannel = client.get_channel(tcha)
-                    wkl = await channel.webhooks()
-                    twkl = await tchannel.webhooks()
-                    for w in wkl:
-                        if w.url == data[x]["url"]:
-                            webhook = w
-                    for tw in twkl:
-                        if tw.url == data[guild]["url"]:
-                            twebhook = tw
+                    wid = data[x]["url"]
+                    twid = data[guild]["url"]
+                    webhook = await client.fetch_webhook(wid)
+                    twebhook = await client.fetch_webhook(twid)
                     async for message in tchannel.history(after=msg.created_at):
                         if message.type == discord.MessageType.reply:
                             if message.reference.resolved.id == msg.id:
