@@ -299,6 +299,8 @@ async def msban(ctx, id):
     with open("ban.json", "r") as f:
         ban = json.load(f)
     ban["ban_id"].append(id)
+    with open("ban.json", "w") as f:
+        json.dump(ban, f)
     r = requests.get(link+"ban.json",headers=header)
     sh=r.json()["sha"]
     base64S= base64.b64encode(bytes(json.dumps(ban), "utf-8"))
