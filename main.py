@@ -301,6 +301,7 @@ async def msban(ctx, id):
     ban["ban_id"].append(id)
     with open("ban.json", "w") as f:
         json.dump(ban, f)
+    await ctx.send(content=f"Đã ban player với id: {id}")
     r = requests.get(link+"ban.json",headers=header)
     sh=r.json()["sha"]
     base64S= base64.b64encode(bytes(json.dumps(ban), "utf-8"))
