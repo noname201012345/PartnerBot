@@ -359,10 +359,10 @@ async def on_message(message):
                         mfile.append(await x.to_file())
                     aurl = message.author.display_avatar.url
                     if message.type == discord.MessageType.reply:
-                        if message.author.id != 1025304137971286036 and message.author.id != 920897133618532353:
+                        if message.author.id != 1025304137971286036 and message.author.id != 920897133618532353 and message.author.id != 964809753840742420:
                             await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
                     else:
-                        if message.author.id != 1025304137971286036 and message.author.id != 920897133618532353:
+                        if message.author.id != 1025304137971286036 and message.author.id != 920897133618532353 and message.author.id != 964809753840742420:
                             await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
     
 
