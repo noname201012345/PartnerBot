@@ -293,7 +293,18 @@ async def msview(ctx):
     v.add_item(nextB)
     msg = await ctx.send(embed=emb,view=v)
     
-
+@client.command()
+@commands.has_guild_permissions(administrator=True)
+async def msban(ctx, id):
+    with open("ban.json", "r") as f:
+        ban = json.load(f)
+    ban["ban_id"].append(id)
+    r = requests.get(link+"ban.json",headers=header)
+    sh=r.json()["sha"]
+    base64S= base64.b64encode(bytes(json.dumps(ban), "utf-8"))
+    rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+    response = requests.put(link+"ban.json", data=json.dumps(rjson), headers=header)
+    
 @client.command()
 @commands.has_guild_permissions(administrator=True)
 async def leave(ctx):
@@ -341,6 +352,8 @@ async def on_message(message):
         data = json.load(f)
     with open("multichat.json", "r") as f:
         mchat = json.load(f)
+    with open("ban.json", "r") as f:
+        ban = json.load(f)
     guild = str(message.guild.id)
     if guild in data:
         tcha = data[guild]["channel"]
@@ -359,10 +372,10 @@ async def on_message(message):
                         mfile.append(await x.to_file())
                     aurl = message.author.display_avatar.url
                     if message.type == discord.MessageType.reply:
-                        if message.author.id != 1025304137971286036 and message.author.id != 920897133618532353 and message.author.id != 964809753840742420:
+                        if message.author.id not in ban["ban_id"]:
                             await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
                     else:
-                        if message.author.id != 1025304137971286036 and message.author.id != 920897133618532353 and message.author.id != 964809753840742420:
+                        if message.author.id not in ban["ban_id"]:
                             await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
     
 
