@@ -6,6 +6,7 @@ import base64
 from dotenv import load_dotenv
 import os
 import math
+from wereComm import wereComm
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ intents.members = True
 intents.message_content = True
 intents.reactions = True
 
-client = commands.Bot(command_prefix='!', intents=intents)
+client = commands.Bot(command_prefix='!', intents=intents,help_command=None)
 
 rtoken = os.getenv("rtoken")
 header = {"Authorization": "Bearer {}".format(rtoken)}
@@ -517,7 +518,8 @@ async def on_message_delete(msg):
                             if message.content == msg.content and message.author.bot:
                                 await webhook.delete_message(message.id)
                                 break
-    
 
+wereComm(client)
+                                
 token = os.getenv("token")
 client.run(token)
