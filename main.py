@@ -394,6 +394,8 @@ async def on_message(message):
                 elif linkCount > 0 and linkCount < 3:  
                     await message.channel.send(content="không được phép spam link đâu biết chưa")
                     linkCount += 1
+                    await asyncio.sleep(60)
+                    linkCount -= linkCount
                 elif linkCount >= 3:
                     with open("ban.json", "r") as f:
                         ban = json.load(f)
