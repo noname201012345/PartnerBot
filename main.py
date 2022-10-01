@@ -347,16 +347,15 @@ async def leave(ctx):
     response = requests.put(link+"data.json", data=json.dumps(rjson), headers=header)
     rps = requests.put(link+"multichat.json", data=json.dumps(rmjson), headers=header)
             
-
+LCount = {}
+        
 @client.event
 async def on_message(message):
     await client.process_commands(message)
     try:
-        linkCount = LCount[str(message.author.id)]
+        LCount[str(message.author.id)]
     except:
-        LCount = {}
         LCount[str(message.author.id)] = 0
-        linkCount = LCount[str(message.author.id)]
     with open("data.json", "r") as f:
         data = json.load(f)
     with open("multichat.json", "r") as f:
@@ -370,7 +369,7 @@ async def on_message(message):
         partner = mchat[room]
         if not message.author.bot and message.channel.id == tcha:
             if "https://" in message.content:
-                if linkCount == 0:
+                if LCount[str(message.author.id)] == 0:
                     for x in partner:
                         if x == str(message.guild.id):
                             pass
@@ -388,15 +387,15 @@ async def on_message(message):
                             else:
                                 if message.author.id not in ban["ban_id"]:
                                     await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
-                    linkCount += 1   
+                    LCount[str(message.author.id)] += 1   
                     await asyncio.sleep(60)
-                    linkCount -= linkCount
-                elif linkCount > 0 and linkCount < 3:  
+                    LCount[str(message.author.id)] -= LCount[str(message.author.id)]
+                elif LCount[str(message.author.id)] > 0 and LCount[str(message.author.id)] < 3:  
                     await message.channel.send(content="không được phép spam link đâu biết chưa")
-                    linkCount += 1
+                    LCount[str(message.author.id)] += 1
                     await asyncio.sleep(60)
-                    linkCount -= linkCount
-                elif linkCount >= 3:
+                    LCount[str(message.author.id)] -= LCount[str(message.author.id)]
+                elif LCount[str(message.author.id)] >= 3:
                     with open("ban.json", "r") as f:
                         ban = json.load(f)
                     ban["ban_id"].append(message.author.id)
