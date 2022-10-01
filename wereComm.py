@@ -7,6 +7,9 @@ import math
 import os
 import requests
 import base64
+from dotenv import load_dotenv
+
+load_dotenv()
    
 rtoken = os.getenv("rtoken")
 header = {"Authorization": "Bearer {}".format(rtoken)}
@@ -583,7 +586,7 @@ def wereComm(client:discord.client):
                                vlover[user] = discord.PermissionOverwrite(read_messages=True, send_messages=True, view_channel=True)
                                voiceover[user] = discord.PermissionOverwrite(speak = True, connect = True, view_channel=True)
                                DMChan = await user.create_dm()
-                               DMembed = discord.Embed(title=f"Phòng Ma Sói: {rname} | Server: {ctx.guild.name}",description=f"Bạn là **{y}**",color=0xFFB600)
+                               DMembed = discord.Embed(title=f"Phòng Ma Sói: {rname}",description=f"Bạn là **{y}**",color=0xFFB600)
                                DMembed.set_footer(text=f"Server: {ctx.guild.name}",icon_url=ctx.guild.icon.url)
                                await DMChan.send(embed=DMembed)
                                player.remove(p)
