@@ -6,6 +6,7 @@ import base64
 from dotenv import load_dotenv
 import os
 import math
+import asyncio
 from wereComm import wereComm
 
 load_dotenv()
@@ -350,8 +351,12 @@ async def leave(ctx):
 @client.event
 async def on_message(message):
     await client.process_commands(message)
-    if message.content.startswith("!join"):
-        await message.delete()
+    try:
+        linkCount = LCount[str(message.author.id)]
+    except:
+        LCount = {}
+        LCount[str(message.author.id)] = 0
+        linkCount = LCount[str(message.author.id)]
     with open("data.json", "r") as f:
         data = json.load(f)
     with open("multichat.json", "r") as f:
@@ -364,24 +369,61 @@ async def on_message(message):
         room = data[guild]["id"]
         partner = mchat[room]
         if not message.author.bot and message.channel.id == tcha:
-            for x in partner:
-                if x == str(message.guild.id):
-                    pass
-                else:
-                    wid = data[x]["webhook"]
-                    channel = client.get_channel(data[x]["channel"])
-                    webhook = await client.fetch_webhook(wid)
-                    mfile = []
-                    for x in message.attachments:
-                        mfile.append(await x.to_file())
-                    aurl = message.author.display_avatar.url
-                    if message.type == discord.MessageType.reply:
-                        if message.author.id not in ban["ban_id"]:
-                            await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+            if "https://" in message.content:
+                if linkCount == 0:
+                    for x in partner:
+                        if x == str(message.guild.id):
+                            pass
+                        else:
+                            wid = data[x]["webhook"]
+                            channel = client.get_channel(data[x]["channel"])
+                            webhook = await client.fetch_webhook(wid)
+                            mfile = []
+                            for x in message.attachments:
+                                mfile.append(await x.to_file())
+                            aurl = message.author.display_avatar.url
+                            if message.type == discord.MessageType.reply:
+                                if message.author.id not in ban["ban_id"]:
+                                    await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+                            else:
+                                if message.author.id not in ban["ban_id"]:
+                                    await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+                    linkCount += 1   
+                    await asyncio.sleep(60)
+                    linkCount -= linkCount
+                elif linkCount > 0 and linkCount < 3:  
+                    await message.channel.send(content="không được phép spam link đâu biết chưa")
+                    linkCount += 1
+                elif linkCount >= 3:
+                    with open("ban.json", "r") as f:
+                        ban = json.load(f)
+                    ban["ban_id"].append(message.author.id)
+                    with open("ban.json", "w") as f:
+                        json.dump(ban, f)
+                    await message.channel.send(content=f"Bạn đã bị ban khỏi multiChat vì spam link")
+                    rb = requests.get(link+"ban.json",headers=header)
+                    shb=r.json()["sha"]
+                    base64SB= base64.b64encode(bytes(json.dumps(ban), "utf-8"))
+                    rbjson = {"message":"cf", "content":base64SB.decode("utf-8"),"sha":shb}
+                    resB = requests.put(link+"ban.json", data=json.dumps(rbjson), headers=header)
+            else:  
+                for x in partner:
+                    if x == str(message.guild.id):
+                        pass
                     else:
-                        if message.author.id not in ban["ban_id"]:
-                            await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
-    
+                        wid = data[x]["webhook"]
+                        channel = client.get_channel(data[x]["channel"])
+                        webhook = await client.fetch_webhook(wid)
+                        mfile = []
+                        for x in message.attachments:
+                            mfile.append(await x.to_file())
+                        aurl = message.author.display_avatar.url
+                        if message.type == discord.MessageType.reply:
+                            if message.author.id not in ban["ban_id"]:
+                                await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+                        else:
+                            if message.author.id not in ban["ban_id"]:
+                                await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
 
 @client.event
 async def on_message_edit(before, after):
