@@ -388,15 +388,14 @@ async def on_message(message):
                                 if message.author.id not in ban["ban_id"]:
                                     await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
                     LCount[str(message.author.id)] += 1   
-                    print(LCount[str(message.author.id)])
                     await asyncio.sleep(60)
                     LCount[str(message.author.id)] -= LCount[str(message.author.id)]
                 elif LCount[str(message.author.id)] > 0 and LCount[str(message.author.id)] < 3:  
-                    await message.channel.send(content="không được phép spam link đâu biết chưa")
+                    SpamMsg =  await message.channel.send(content="không được phép spam link đâu biết chưa")
                     LCount[str(message.author.id)] += 1
-                    print(LCount[str(message.author.id)])
                     await asyncio.sleep(60)
                     LCount[str(message.author.id)] -= LCount[str(message.author.id)]
+                    await SpamMsg.delete()
                 elif LCount[str(message.author.id)] >= 3:
                     with open("ban.json", "r") as f:
                         ban = json.load(f)
