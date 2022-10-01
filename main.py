@@ -403,7 +403,7 @@ async def on_message(message):
                         json.dump(ban, f)
                     await message.channel.send(content=f"Bạn đã bị ban khỏi multiChat vì spam link")
                     rb = requests.get(link+"ban.json",headers=header)
-                    shb=r.json()["sha"]
+                    shb=rb.json()["sha"]
                     base64SB= base64.b64encode(bytes(json.dumps(ban), "utf-8"))
                     rbjson = {"message":"cf", "content":base64SB.decode("utf-8"),"sha":shb}
                     resB = requests.put(link+"ban.json", data=json.dumps(rbjson), headers=header)
