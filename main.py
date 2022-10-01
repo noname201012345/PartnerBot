@@ -352,10 +352,6 @@ LCount = {}
 @client.event
 async def on_message(message):
     await client.process_commands(message)
-    try:
-        LCount[str(message.author.id)]
-    except:
-        LCount[str(message.author.id)] = 0
     with open("data.json", "r") as f:
         data = json.load(f)
     with open("multichat.json", "r") as f:
@@ -368,6 +364,10 @@ async def on_message(message):
         room = data[guild]["id"]
         partner = mchat[room]
         if not message.author.bot and message.channel.id == tcha:
+            try:
+                LCount[str(message.author.id)]
+            except:
+                LCount[str(message.author.id)] = 0
             if "https://" in message.content:
                 if LCount[str(message.author.id)] == 0:
                     for x in partner:
@@ -388,11 +388,13 @@ async def on_message(message):
                                 if message.author.id not in ban["ban_id"]:
                                     await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
                     LCount[str(message.author.id)] += 1   
+                    print(LCount[str(message.author.id)])
                     await asyncio.sleep(60)
                     LCount[str(message.author.id)] -= LCount[str(message.author.id)]
                 elif LCount[str(message.author.id)] > 0 and LCount[str(message.author.id)] < 3:  
                     await message.channel.send(content="không được phép spam link đâu biết chưa")
                     LCount[str(message.author.id)] += 1
+                    print(LCount[str(message.author.id)])
                     await asyncio.sleep(60)
                     LCount[str(message.author.id)] -= LCount[str(message.author.id)]
                 elif LCount[str(message.author.id)] >= 3:
