@@ -385,9 +385,11 @@ async def on_message(message):
                             if message.type == discord.MessageType.reply:
                                 if message.author.id not in ban["ban_id"]:
                                     await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+                                    print(f"Rep have link, at {client.get_guild(int(x)).name}")
                             else:
                                 if message.author.id not in ban["ban_id"]:
-                                    await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)  
+                                    await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+                                    print(f"Norm have link, at {client.get_guild(int(x)).name}")
                     await asyncio.sleep(60)
                     LCount[str(message.author.id)] -= LCount[str(message.author.id)]
                 elif LCount[str(message.author.id)] > 0 and LCount[str(message.author.id)] < 3:  
@@ -424,9 +426,11 @@ async def on_message(message):
                         if message.type == discord.MessageType.reply:
                             if message.author.id not in ban["ban_id"]:
                                 await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+                                print(f"Rep dont have link, at {client.get_guild(int(x)).name}")
                         else:
                             if message.author.id not in ban["ban_id"]:
                                 await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+                                print(f"Norm dont have link, at {client.get_guild(int(x)).name}")
 
 @client.event
 async def on_message_edit(before, after):
