@@ -364,7 +364,7 @@ async def on_message(message):
         room = data[guild]["id"]
         partner = mchat[room]
         if not message.author.bot and message.channel.id == tcha:
-            if "https://" in message.content:
+            if "https://" in message.content and "@everyone" not in message.content and "@here" not in message.content:
                 try:
                     LCount[str(message.author.id)]
                 except:
@@ -411,7 +411,7 @@ async def on_message(message):
                         rbjson = {"message":"cf", "content":base64SB.decode("utf-8"),"sha":shb}
                         resB = requests.put(link+"ban.json", data=json.dumps(rbjson), headers=header)
                     await message.channel.send(content=f"Bạn đã bị ban khỏi multiChat vì spam link")
-            else:  
+            elif "@everyone" not in message.content and "@here" not in message.content:  
                 for x in partner:
                     if x == str(message.guild.id):
                         pass
@@ -431,6 +431,8 @@ async def on_message(message):
                             if message.author.id not in ban["ban_id"]:
                                 print(f"Norm dont have link, at {client.get_guild(int(x)).name}")
                                 await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+            elif "@everyone" in message.content or "@here" in message.content:
+                await ctx.send("m có tin t ban m khỏi multichat ko, đừng có ping everyone hoặc here")
 
 @client.event
 async def on_message_edit(before, after):
