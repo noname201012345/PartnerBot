@@ -384,11 +384,9 @@ async def on_message(message):
                             aurl = message.author.display_avatar.url
                             if message.type == discord.MessageType.reply:
                                 if message.author.id not in ban["ban_id"]:
-                                    print(f"Rep have link, at {client.get_guild(int(x)).name}")
                                     await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
                             else:
                                 if message.author.id not in ban["ban_id"]:
-                                    print(f"Norm have link, at {client.get_guild(int(x)).name}")
                                     await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
                     await asyncio.sleep(60)
                     LCount[str(message.author.id)] -= LCount[str(message.author.id)]
@@ -425,11 +423,9 @@ async def on_message(message):
                         aurl = message.author.display_avatar.url
                         if message.type == discord.MessageType.reply:
                             if message.author.id not in ban["ban_id"]:
-                                print(f"Rep dont have link, at {client.get_guild(int(x)).name}")
                                 await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
                         else:
                             if message.author.id not in ban["ban_id"]:
-                                print(f"Norm dont have link, at {client.get_guild(int(x)).name}")
                                 await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
             elif "@everyone" in message.content or "@here" in message.content:
                 await message.channel.send("m có tin t ban m khỏi multichat ko, đừng có ping everyone hoặc here")
