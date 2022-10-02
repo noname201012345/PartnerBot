@@ -375,19 +375,22 @@ async def on_message(message):
                         if x == str(message.guild.id):
                             pass
                         else:
-                            wid = data[x]["webhook"]
-                            channel = client.get_channel(data[x]["channel"])
-                            webhook = await client.fetch_webhook(wid)
-                            mfile = []
-                            for x in message.attachments:
-                                mfile.append(await x.to_file())
-                            aurl = message.author.display_avatar.url
-                            if message.type == discord.MessageType.reply:
-                                if message.author.id not in ban["ban_id"]:
-                                    await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
-                            else:
-                                if message.author.id not in ban["ban_id"]:
-                                    await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+                            try:
+                                wid = data[x]["webhook"]
+                                channel = client.get_channel(data[x]["channel"])
+                                webhook = await client.fetch_webhook(wid)
+                                mfile = []
+                                for x in message.attachments:
+                                    mfile.append(await x.to_file())
+                                aurl = message.author.display_avatar.url
+                                if message.type == discord.MessageType.reply:
+                                    if message.author.id not in ban["ban_id"]:
+                                        await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+                                else:
+                                    if message.author.id not in ban["ban_id"]:
+                                        await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+                            except:
+                                pass
                     await asyncio.sleep(60)
                     LCount[str(message.author.id)] -= LCount[str(message.author.id)]
                 elif LCount[str(message.author.id)] > 0 and LCount[str(message.author.id)] < 3:  
@@ -414,19 +417,22 @@ async def on_message(message):
                     if x == str(message.guild.id):
                         pass
                     else:
-                        wid = data[x]["webhook"]
-                        channel = client.get_channel(data[x]["channel"])
-                        webhook = await client.fetch_webhook(wid)
-                        mfile = []
-                        for x in message.attachments:
-                            mfile.append(await x.to_file())
-                        aurl = message.author.display_avatar.url
-                        if message.type == discord.MessageType.reply:
-                            if message.author.id not in ban["ban_id"]:
-                                await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
-                        else:
-                            if message.author.id not in ban["ban_id"]:
-                                await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+                        try:
+                            wid = data[x]["webhook"]
+                            channel = client.get_channel(data[x]["channel"])
+                            webhook = await client.fetch_webhook(wid)
+                            mfile = []
+                            for x in message.attachments:
+                                mfile.append(await x.to_file())
+                            aurl = message.author.display_avatar.url
+                            if message.type == discord.MessageType.reply:
+                                if message.author.id not in ban["ban_id"]:
+                                    await webhook.send(get_rfmess(message),username=message.author.display_name,avatar_url=aurl,files=mfile)
+                            else:
+                                if message.author.id not in ban["ban_id"]:
+                                    await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
+                        except:
+                            pass            
             elif "@everyone" in message.content or "@here" in message.content:
                 await message.channel.send("m có tin t ban m khỏi multichat ko, đừng có ping everyone hoặc here")
 
