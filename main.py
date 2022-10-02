@@ -432,7 +432,7 @@ async def on_message(message):
                                 print(f"Norm dont have link, at {client.get_guild(int(x)).name}")
                                 await webhook.send(message.content,username=message.author.display_name,avatar_url=aurl,files=mfile)
             elif "@everyone" in message.content or "@here" in message.content:
-                await ctx.send("m có tin t ban m khỏi multichat ko, đừng có ping everyone hoặc here")
+                await message.channel.send("m có tin t ban m khỏi multichat ko, đừng có ping everyone hoặc here")
 
 @client.event
 async def on_message_edit(before, after):
