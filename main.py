@@ -350,7 +350,7 @@ async def leave(ctx):
 LCount = {}
         
 @client.event
-async def on_(message):
+async def on_message(message):
     await client.process_commands(message)
     with open("data.json", "r") as f:
         data = json.load(f)
