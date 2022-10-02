@@ -399,15 +399,16 @@ async def on_message(message):
                 elif LCount[str(message.author.id)] >= 3:
                     with open("ban.json", "r") as f:
                         ban = json.load(f)
-                    ban["ban_id"].append(message.author.id)
-                    with open("ban.json", "w") as f:
-                        json.dump(ban, f)
+                    if message.author.id not in ban["ban_id"]
+                        ban["ban_id"].append(message.author.id)
+                        with open("ban.json", "w") as f:
+                            json.dump(ban, f)
+                        rb = requests.get(link+"ban.json",headers=header)
+                        shb=rb.json()["sha"]
+                        base64SB= base64.b64encode(bytes(json.dumps(ban), "utf-8"))
+                        rbjson = {"message":"cf", "content":base64SB.decode("utf-8"),"sha":shb}
+                        resB = requests.put(link+"ban.json", data=json.dumps(rbjson), headers=header)
                     await message.channel.send(content=f"Bạn đã bị ban khỏi multiChat vì spam link")
-                    rb = requests.get(link+"ban.json",headers=header)
-                    shb=rb.json()["sha"]
-                    base64SB= base64.b64encode(bytes(json.dumps(ban), "utf-8"))
-                    rbjson = {"message":"cf", "content":base64SB.decode("utf-8"),"sha":shb}
-                    resB = requests.put(link+"ban.json", data=json.dumps(rbjson), headers=header)
             else:  
                 for x in partner:
                     if x == str(message.guild.id):
