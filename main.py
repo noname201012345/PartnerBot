@@ -364,11 +364,11 @@ async def on_message(message):
         room = data[guild]["id"]
         partner = mchat[room]
         if not message.author.bot and message.channel.id == tcha:
-            try:
-                LCount[str(message.author.id)]
-            except:
-                LCount[str(message.author.id)] = 0
             if "https://" in message.content:
+                try:
+                    LCount[str(message.author.id)]
+                except:
+                    LCount[str(message.author.id)] = 0
                 if LCount[str(message.author.id)] == 0:
                     LCount[str(message.author.id)] += 1
                     for x in partner:
