@@ -9,8 +9,7 @@ import math
 import asyncio
 from wereComm import wereComm
 
-load_dotenv()
-
+load_dotenv
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
