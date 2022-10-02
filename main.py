@@ -9,7 +9,8 @@ import math
 import asyncio
 from wereComm import wereComm
 
-load_dotenv
+load_dotenv()
+
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
@@ -349,7 +350,7 @@ async def leave(ctx):
 LCount = {}
         
 @client.event
-async def on_message(message):
+async def on_(message):
     await client.process_commands(message)
     with open("data.json", "r") as f:
         data = json.load(f)
