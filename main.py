@@ -434,6 +434,7 @@ async def on_message(message):
                         except:
                             pass            
             elif "@everyone" in message.content or "@here" in message.content:
+                await message.delete()
                 await message.channel.send("m có tin t ban m khỏi multichat ko, đừng có ping everyone hoặc here")
 
 @client.event
