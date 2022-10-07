@@ -300,7 +300,7 @@ async def msview(ctx):
 async def msban(ctx, id):
     with open("ban.json", "r") as f:
         ban = json.load(f)
-    ban["ban_id"].append(id)
+    ban["ban_id"].append(int(id))
     with open("ban.json", "w") as f:
         json.dump(ban, f)
     await ctx.send(content=f"Đã ban player với id: {id}")
