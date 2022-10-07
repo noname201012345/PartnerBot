@@ -671,6 +671,7 @@ def MultiChat(client:discord.Client):
                                 if "gif" in after.content:
                                     mess.set_image(url=after.content)
                                     mess.description=""
+                                    mess.title=""
                         async for messa in channel.history(after=before.created_at):
                             if messa.author.bot and messa.author.id == client.user.id:
                                 if messa.embeds[0].author.url == before.jump_url:
