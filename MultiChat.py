@@ -21,6 +21,7 @@ def MultiChat(client:discord.Client):
             with open("multichat.json", "r") as f:
                 mchat = json.load(f)
             guild = str(ctx.guild.id)
+            await ctx.send("Đang tìm phòng chat...")
             if name in mchat:
                 marr = mchat[name]
                 c=0
