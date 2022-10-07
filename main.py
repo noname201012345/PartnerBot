@@ -33,7 +33,7 @@ async def del_web(ctx):
         data = json.load(f)
     with open("multichat.json", "r") as f:
         mchat = json.load(f)
-    guild = str(message.guild.id)
+    guild = str(ctx.guild.id)
     if guild in data:
         room = data[guild]["id"]
         partner = mchat[room]
