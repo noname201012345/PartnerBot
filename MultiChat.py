@@ -280,7 +280,6 @@ def MultiChat(client:discord.Client):
             if not message.author.bot and message.channel.id == tcha:
                 st = []
                 attach = []
-                file = []
                 img = []
                 for x in message.stickers:
                     st.append(await x.fetch())
@@ -297,6 +296,7 @@ def MultiChat(client:discord.Client):
                     if LCount[str(message.author.id)] == 0:
                         LCount[str(message.author.id)] += 1
                         for x in partner:
+                            file = []
                             if x == str(message.guild.id):
                                 pass
                             else:
