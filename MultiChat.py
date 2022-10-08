@@ -525,6 +525,7 @@ def MultiChat(client:discord.Client):
                         await message.channel.send(content=f"Bạn đã bị ban khỏi multiChat vì spam link")
                 elif "@everyone" not in message.content and "@here" not in message.content:  
                     for x in partner:
+                        file = []
                         if x == str(message.guild.id):
                             pass
                         else:
@@ -633,6 +634,7 @@ def MultiChat(client:discord.Client):
                 for x in after.attachments:
                     attach.append(x)
                 for x in partner:
+                    file = []
                     if x == str(after.guild.id):
                         pass
                     else:
