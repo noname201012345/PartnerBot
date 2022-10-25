@@ -535,87 +535,90 @@ def MultiChat(client:discord.Client):
                         if x == str(message.guild.id):
                             pass
                         else:
-                            channel = client.get_channel(data[x]["channel"])
-                            mess = discord.Embed(description=f"{message.content}",color=message.author.color,)
-                            if message.content != "":
-                                mess.title = "Message:"
-                            if len(attach) == 1:
-                                if attach[0].content_type.startswith("image"):
-                                    mess.set_image(url=attach[0].url)
-                                else:
-                                    file.append(await attach[0].to_file())
-                            elif len(attach) > 1:
-                                for x in attach:
-                                    if x == attach[0]:
-                                        if x.content_type.startswith("image"):
-                                            mess.set_image(url=x.url)
-                                        else:
-                                            file.append(await x.to_file())
+                            try:
+                                channel = client.get_channel(data[x]["channel"])
+                                mess = discord.Embed(description=f"{message.content}",color=message.author.color,)
+                                if message.content != "":
+                                    mess.title = "Message:"
+                                if len(attach) == 1:
+                                    if attach[0].content_type.startswith("image"):
+                                        mess.set_image(url=attach[0].url)
                                     else:
-                                        if x.content_type.startswith("image"):
-                                            img.append(x)
+                                        file.append(await attach[0].to_file())
+                                elif len(attach) > 1:
+                                    for x in attach:
+                                        if x == attach[0]:
+                                            if x.content_type.startswith("image"):
+                                                mess.set_image(url=x.url)
+                                            else:
+                                                file.append(await x.to_file())
                                         else:
-                                            file.append(await x.to_file())
-                            for y in st:
-                                    if y not in client.get_guild(int(x)).stickers:
-                                        st.remove(x)
-                            if len(img) > 0:
-                                embeds = []
-                                embeds.append(mess)
-                                for x in img:
-                                    e = discord.Embed(color=mess.color)
-                                    e.set_image(url=x.url)
-                                    embeds.append(e)
-                            mess.set_footer(text=f"Server: {message.guild.name}",icon_url=f"{message.guild.icon.url}")
-                            mess.set_author(name=f"{message.author.display_name}",icon_url=f"{message.author.display_avatar.url}",url=f"{message.jump_url}")
-                            if message.author.id not in ban:
-                                if message.reference == None:
-                                    if len(img) > 0:
-                                        await channel.send(embeds=embeds,stickers=st,files=file)
-                                    else:
-                                        await channel.send(embed=mess,stickers=st,files=file)
-                                else:
-                                    if not message.reference.cached_message.author.bot and message.reference.cached_message.author.id not in ban:
-                                        async for messa in channel.history(after=message.reference.cached_message.created_at):
-                                            if messa.author.bot and messa.author.id == client.user.id:
-                                                if messa.embeds[0].author.url == message.reference.jump_url:
-                                                    if len(img) > 0:
-                                                        await channel.send(embeds=embeds,stickers=st,files=file,reference=messa)
-                                                    else:
-                                                        await channel.send(embed=mess,stickers=st,files=file,reference=messa)
-                                                    break
-                                    elif message.reference.cached_message.author.bot and message.reference.cached_message.author.id != client.user.id or message.reference.cached_message.author.id in ban:
+                                            if x.content_type.startswith("image"):
+                                                img.append(x)
+                                            else:
+                                                file.append(await x.to_file())
+                                for y in st:
+                                        if y not in client.get_guild(int(x)).stickers:
+                                            st.remove(x)
+                                if len(img) > 0:
+                                    embeds = []
+                                    embeds.append(mess)
+                                    for x in img:
+                                        e = discord.Embed(color=mess.color)
+                                        e.set_image(url=x.url)
+                                        embeds.append(e)
+                                mess.set_footer(text=f"Server: {message.guild.name}",icon_url=f"{message.guild.icon.url}")
+                                mess.set_author(name=f"{message.author.display_name}",icon_url=f"{message.author.display_avatar.url}",url=f"{message.jump_url}")
+                                if message.author.id not in ban:
+                                    if message.reference == None:
                                         if len(img) > 0:
                                             await channel.send(embeds=embeds,stickers=st,files=file)
                                         else:
                                             await channel.send(embed=mess,stickers=st,files=file)
-                                        break 
-                                    elif message.reference.cached_message.author.bot and message.reference.cached_message.author.id == client.user.id:
-                                        u = message.reference.cached_message.embeds[0].author.url
-                                        tguild = u[29:u.find("/",29)]
-                                        if str(x) == str(tguild):
-                                            refer = message.reference.cached_message
-                                            async for messa in channel.history(before=refer.created_at,oldest_first=False):
-                                                if not messa.author.bot:
-                                                    if refer.embeds[0].author.url == messa.jump_url:
-                                                        if len(img) > 0:
-                                                            await channel.send(embeds=embeds,stickers=st,files=file,reference=messa)
-                                                        else:
-                                                            await channel.send(embed=mess,stickers=st,files=file,reference=messa)
-                                                        break
-                                        else:
-                                            ind = (u.find("/",(u.find("/",29)+2))+1)
-                                            mesid = u[ind:len(u)]
-                                            mes = await client.get_channel(data[str(tguild)]["channel"]).fetch_message(mesid)
-                                            refer = message.reference.cached_message
-                                            async for messa in channel.history(after=mes.created_at):
+                                    else:
+                                        if not message.reference.cached_message.author.bot and message.reference.cached_message.author.id not in ban:
+                                            async for messa in channel.history(after=message.reference.cached_message.created_at):
                                                 if messa.author.bot and messa.author.id == client.user.id:
-                                                    if refer.embeds[0].author.url == messa.embeds[0].author.url:
+                                                    if messa.embeds[0].author.url == message.reference.jump_url:
                                                         if len(img) > 0:
                                                             await channel.send(embeds=embeds,stickers=st,files=file,reference=messa)
                                                         else:
                                                             await channel.send(embed=mess,stickers=st,files=file,reference=messa)
                                                         break
+                                        elif message.reference.cached_message.author.bot and message.reference.cached_message.author.id != client.user.id or message.reference.cached_message.author.id in ban:
+                                            if len(img) > 0:
+                                                await channel.send(embeds=embeds,stickers=st,files=file)
+                                            else:
+                                                await channel.send(embed=mess,stickers=st,files=file)
+                                            break 
+                                        elif message.reference.cached_message.author.bot and message.reference.cached_message.author.id == client.user.id:
+                                            u = message.reference.cached_message.embeds[0].author.url
+                                            tguild = u[29:u.find("/",29)]
+                                            if str(x) == str(tguild):
+                                                refer = message.reference.cached_message
+                                                async for messa in channel.history(before=refer.created_at,oldest_first=False):
+                                                    if not messa.author.bot:
+                                                        if refer.embeds[0].author.url == messa.jump_url:
+                                                            if len(img) > 0:
+                                                                await channel.send(embeds=embeds,stickers=st,files=file,reference=messa)
+                                                            else:
+                                                                await channel.send(embed=mess,stickers=st,files=file,reference=messa)
+                                                            break
+                                            else:
+                                                ind = (u.find("/",(u.find("/",29)+2))+1)
+                                                mesid = u[ind:len(u)]
+                                                mes = await client.get_channel(data[str(tguild)]["channel"]).fetch_message(mesid)
+                                                refer = message.reference.cached_message
+                                                async for messa in channel.history(after=mes.created_at):
+                                                    if messa.author.bot and messa.author.id == client.user.id:
+                                                        if refer.embeds[0].author.url == messa.embeds[0].author.url:
+                                                            if len(img) > 0:
+                                                                await channel.send(embeds=embeds,stickers=st,files=file,reference=messa)
+                                                            else:
+                                                                await channel.send(embed=mess,stickers=st,files=file,reference=messa)
+                                                            break
+                            except:
+                                pass
                 elif "@everyone" in message.content or "@here" in message.content:
                     await message.delete()
                     await message.channel.send("Ay yo bro, ping what?")
