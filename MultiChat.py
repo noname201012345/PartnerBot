@@ -669,52 +669,55 @@ def MultiChat(client:discord.Client):
                     if x == str(after.guild.id):
                         pass
                     else:
-                        channel = client.get_channel(data[x]["channel"])
-                        mess = discord.Embed(description=f"{after.content}",color=after.author.color,)
-                        if after.content != "":
-                            mess.title = "Message:"
-                        if len(attach) == 1:
-                            if attach[0].content_type.startswith("image"):
-                                mess.set_image(url=attach[0].url)
-                            else:
-                                file.append(await attach[0].to_file())
-                        elif len(attach) > 1:
-                            for x in attach:
-                                if x == attach[0]:
-                                    if x.content_type.startswith("image"):
-                                        mess.set_image(url=x.url)
-                                    else:
-                                        file.append(await x.to_file())
+                        try:
+                            channel = client.get_channel(data[x]["channel"])
+                            mess = discord.Embed(description=f"{after.content}",color=after.author.color,)
+                            if after.content != "":
+                                mess.title = "Message:"
+                            if len(attach) == 1:
+                                if attach[0].content_type.startswith("image"):
+                                    mess.set_image(url=attach[0].url)
                                 else:
-                                    if x.content_type.startswith("image"):
-                                        img.append(x)
+                                    file.append(await attach[0].to_file())
+                            elif len(attach) > 1:
+                                for x in attach:
+                                    if x == attach[0]:
+                                        if x.content_type.startswith("image"):
+                                            mess.set_image(url=x.url)
+                                        else:
+                                            file.append(await x.to_file())
                                     else:
-                                        file.append(await x.to_file())
-                        if len(img) > 0:
-                            embeds = []
-                            embeds.append(mess)
-                            for x in img:
-                                e = discord.Embed(color=mess.color)
-                                e.set_image(url=x.url)
-                                embeds.append(e)
-                        mess.set_footer(text=f"Server: {after.guild.name}",icon_url=f"{after.guild.icon.url}")
-                        mess.set_author(name=f"{after.author.display_name}",icon_url=f"{after.author.display_avatar.url}",url=f"{after.jump_url}")
-                        if "https://" in after.content:
-                            if after.content.find(" ") == -1 and after.attachments == []:
-                                if "gif" in after.content:
-                                    mess.set_image(url=after.content)
-                                    mess.description=""
-                                    mess.title=""
-                        async for messa in channel.history(after=before.created_at):
-                            if messa.author.bot and messa.author.id == client.user.id:
-                                if messa.embeds[0].author.url == before.jump_url:
-                                    if len(img) > 0:
-                                        await messa.edit(embeds=embeds,attachments=file)
-                                        print("test")
-                                    else:
-                                        await messa.edit(embed=mess,attachments=file)
-                                    break
-                                
+                                        if x.content_type.startswith("image"):
+                                            img.append(x)
+                                        else:
+                                            file.append(await x.to_file())
+                            if len(img) > 0:
+                                embeds = []
+                                embeds.append(mess)
+                                for x in img:
+                                    e = discord.Embed(color=mess.color)
+                                    e.set_image(url=x.url)
+                                    embeds.append(e)
+                            mess.set_footer(text=f"Server: {after.guild.name}",icon_url=f"{after.guild.icon.url}")
+                            mess.set_author(name=f"{after.author.display_name}",icon_url=f"{after.author.display_avatar.url}",url=f"{after.jump_url}")
+                            if "https://" in after.content:
+                                if after.content.find(" ") == -1 and after.attachments == []:
+                                    if "gif" in after.content:
+                                        mess.set_image(url=after.content)
+                                        mess.description=""
+                                        mess.title=""
+                            async for messa in channel.history(after=before.created_at):
+                                if messa.author.bot and messa.author.id == client.user.id:
+                                    if messa.embeds[0].author.url == before.jump_url:
+                                        if len(img) > 0:
+                                            await messa.edit(embeds=embeds,attachments=file)
+                                            print("test")
+                                        else:
+                                            await messa.edit(embed=mess,attachments=file)
+                                        break
+                        except:
+                            pass
+
     @client.event
     async def on_message_delete(message):
         with open("data.json", "r") as f:
@@ -730,13 +733,16 @@ def MultiChat(client:discord.Client):
             partner = mchat[room]
             if not message.author.bot and message.channel.id == tcha and message.author.id not in ban[room]:
                 for x in partner:
-                    channel = client.get_channel(data[x]["channel"])
-                    if x == str(message.guild.id):
+                    try:
+                        channel = client.get_channel(data[x]["channel"])
+                        if x == str(message.guild.id):
+                            pass
+                        else:
+                            async for messa in channel.history(after=message.created_at):
+                                if messa.author.bot and messa.author.id == client.user.id:
+                                    if messa.embeds[0].author.url == message.jump_url:
+                                        await messa.delete()
+                                        break
+                    except:
                         pass
-                    else:
-                        async for messa in channel.history(after=message.created_at):
-                            if messa.author.bot and messa.author.id == client.user.id:
-                                if messa.embeds[0].author.url == message.jump_url:
-                                    await messa.delete()
-                                    break
                                 
