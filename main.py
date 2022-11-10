@@ -25,7 +25,7 @@ link="https://api.github.com/repos/noname201012345/PartnerBot/contents/"
 
 @client.command()
 async def help(ctx):
-    helpEmbed = discord.Embed(title="Các lệnh của Bot:",color=0x00FFF3,description=f"**Prefix:** {client.command_prefix}\n\n> **Lệnh MultiChat:**\n\n• **msview** - Xem các phòng chat liên server\n• **join** __*tên phòng chat*__ - Tham gia một phòng chat\n• **leave** - Rời phòng chat hiện tại\n• **msban** __*id*__ - Ban người có id trong câu lệnh khỏi phòng chat\n• **mod** __**Tag Member**__- Cấp quyền mod cho người dùng\n• **create** __*tên phòng chat*__ - Tạo phòng chat liên server mới\n\n> **Lệnh Ma Sói:**\n\n• **wwcreate** - Tạo danh mục ma sói (bắt buộc phải tạo nếu muốn chơi ma sói)\n• **werewolf** __*tên phòng*__ - Tạo phòng ma sói\n• **joinww** __*tên phòng*__ - Tham gia phòng ma sói\n• **delww** - Xóa phòng ma sói bạn là chủ phòng\n• **leadww** __*người chơi*__ - Chuyển chủ phòng cho người khác\n• **leaveww** - Rời khỏi phòng ma sói\n• **roomww** - Kiểm tra các phòng ma sói hiện có\n• **setupww** - Setup phòng ma sói của bạn\n• **wwstart** - Bắt đầu game ma sói> **Lệnh Khác:**\n\n• **avatar** - Show avatar của bạn hoặc người khác\n• **rolega** - Nhận role giveaway để tạo giveaway")
+    helpEmbed = discord.Embed(title="Các lệnh của Bot:",color=0x00FFF3,description=f"**Prefix:** {client.command_prefix}\n\n> **Lệnh MultiChat:**\n\n• **msview** - Xem các phòng chat liên server\n• **join** __*tên phòng chat*__ - Tham gia một phòng chat\n• **leave** - Rời phòng chat hiện tại\n• **msban** __*id*__ - Ban người có id trong câu lệnh khỏi phòng chat\n• **mod** __**Tag Member**__- Cấp quyền mod cho người dùng\n• **create** __*tên phòng chat*__ - Tạo phòng chat liên server mới\n\n> **Lệnh Ma Sói:**\n\n• **wwcreate** - Tạo danh mục ma sói (bắt buộc phải tạo nếu muốn chơi ma sói)\n• **werewolf** __*tên phòng*__ - Tạo phòng ma sói\n• **joinww** __*tên phòng*__ - Tham gia phòng ma sói\n• **delww** - Xóa phòng ma sói bạn là chủ phòng\n• **leadww** __*người chơi*__ - Chuyển chủ phòng cho người khác\n• **leaveww** - Rời khỏi phòng ma sói\n• **roomww** - Kiểm tra các phòng ma sói hiện có\n• **setupww** - Setup phòng ma sói của bạn\n• **wwstart** - Bắt đầu game ma sói\n\n> **Lệnh Khác:**\n\n• **avatar** - Show avatar của bạn hoặc người khác\n• **rolega** - Nhận role giveaway để tạo giveaway")
     helpEmbed.set_author(name="Gamer Hệ Đần",icon_url=client.get_guild(1010936069329522731).icon.url,url="https://discord.gg/gamerhedan")
     await ctx.send(embed=helpEmbed)
 
@@ -37,11 +37,11 @@ async def on_ready():
 async def avatar(ctx):
     if len(ctx.message.mentions) != 0:
         embed = discord.Embed(color=ctx.author.color,title=f"{ctx.message.mentions[0].mention} Avatar:")
-        embed.set_image(ctx.message.mentions[0].avatar.url)
+        embed.set_image(url=str(ctx.message.mentions[0].avatar.url))
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(color=ctx.author.color,title=f"{ctx.author.mention} Avatar:")
-        embed.set_image(ctx.author.avatar.url)
+        embed.set_image(url=str(ctx.author.avatar.url))
         await ctx.send(embed=embed)
 
 @client.command()
