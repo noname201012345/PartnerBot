@@ -186,7 +186,7 @@ def MultiChat(client:discord.Client):
             try:
                 room = data[str(ctx.guild.id)]["id"]
                 if ctx.author.id in mod[room]:
-                    ban[str(ctx.guild.id)].append(int(id))
+                    ban[room].append(int(id))
                     with open("ban.json", "w") as f:
                         json.dump(ban, f)
                     await ctx.send(content=f"Đã ban player với id: {id}")
