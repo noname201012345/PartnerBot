@@ -36,11 +36,11 @@ async def on_ready():
 @client.command()
 async def avatar(ctx):
     if len(ctx.message.mentions) != 0:
-        embed = discord.Embed(color=ctx.author.color,title=f"{ctx.message.mentions[0].mention} Avatar:")
+        embed = discord.Embed(color=ctx.author.color,title=f"{ctx.message.mentions[0].name} Avatar:")
         embed.set_image(url=str(ctx.message.mentions[0].avatar.url))
         await ctx.send(embed=embed)
     else:
-        embed = discord.Embed(color=ctx.author.color,title=f"{ctx.author.mention} Avatar:")
+        embed = discord.Embed(color=ctx.author.color,title=f"{ctx.author.name} Avatar:")
         embed.set_image(url=str(ctx.author.avatar.url))
         await ctx.send(embed=embed)
 
