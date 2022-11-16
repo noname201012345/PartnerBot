@@ -10,6 +10,8 @@ import asyncio
 from wereComm import wereComm
 from MultiChat import MultiChat
 from team import Team
+from Voucher.main import Vouching
+from seller import Sell
 
 load_dotenv()
 
@@ -55,6 +57,8 @@ async def rolega(ctx):
 wereComm(client)
 MultiChat(client)
 Team(client)
+Vouching(client=client)
+Sell(client=client)
                                 
 token = os.getenv("token")
 client.run(token)
