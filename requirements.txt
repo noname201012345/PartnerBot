@@ -1,3 +1,8 @@
 discord.py
 python-dotenv
 requests
+aiosqlite
+matplotlib
+flask
+pandas
+easy_pil
