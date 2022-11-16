@@ -3,6 +3,18 @@ from discord.ext import commands
 import json
 import asyncio
 from datetime import datetime
+import os
+import requests
+import base64
+from dotenv import load_dotenv
+
+load_dotenv()
+    
+    
+
+rtoken = os.getenv("rtoken")
+header = {"Authorization": "Bearer {}".format(rtoken)}
+link="https://api.github.com/repos/noname201012345/PartnerBot/contents/"
     
 def Sell(client:commands.Bot):
     @client.command(aliases=["as"])
@@ -31,6 +43,11 @@ def Sell(client:commands.Bot):
                     x["Content"] = Mess.content
             with open("SellDat.json","w") as f:
                 json.dump(data,f)
+            r = requests.get(link+"SellDat.json",headers=header)
+            sh=r.json()["sha"]
+            base64S= base64.b64encode(bytes(json.dumps(data), "utf-8"))
+            rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+            response = requests.put(link+"SellDat.json", data=json.dumps(rjson), headers=header)
             await ctx.send("Edit Seller thành công!")
         else:
             await ctx.send("Bạn phải có quyền quản lý để dùng lệnh!")
@@ -84,6 +101,11 @@ def Sell(client:commands.Bot):
                 await client.get_channel(1041689519835054140).send(view=view,embed=emb)
                 with open("SellDat.json","w") as f:
                     json.dump(data,f)
+                r = requests.get(link+"SellDat.json",headers=header)
+                sh=r.json()["sha"]
+                base64S= base64.b64encode(bytes(json.dumps(data), "utf-8"))
+                rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+                response = requests.put(link+"SellDat.json", data=json.dumps(rjson), headers=header)
                 await asyncio.sleep(600*data["array"][data["index"]]["Level"])
         else:
             await ctx.send("Bạn phải có quyền quản lý để dùng lệnh!")
