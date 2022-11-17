@@ -35,6 +35,8 @@ async def help(ctx):
 @client.event
 async def on_ready():
     print(f'Successfully logged in as {client.user}')
+    activity = discord.Game(name="Gamer Hệ Đần", type=3)
+    await client.change_presence(status=discord.Status.online, activity=activity)
     
 @client.command()
 async def avatar(ctx):
