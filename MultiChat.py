@@ -213,13 +213,7 @@ def MultiChat(client:discord.Client):
             if guild in data:
                 room = data[guild]["id"]
                 mchat[room].remove(guild)
-                wid = data[guild]["webhook"]
                 channel = client.get_channel(data[guild]["channel"])
-                try:
-                    webhook = await client.fetch_webhook(wid)
-                    await webhook.delete()
-                except:
-                    print("deleted webhook!")
                 data.pop(guild)
                 await ctx.send("Rời phòng thành công")
                 with open("data.json", "w") as f:
