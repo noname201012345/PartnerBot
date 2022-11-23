@@ -79,12 +79,9 @@ def Sell(client:commands.Bot):
                     v = discord.ui.View(timeout=None)
                     close = discord.ui.Button(style=discord.ButtonStyle.gray,emoji="🔒",label="Close")
                     async def closeC(inter: discord.Interaction):
-                        if inter.user.id == mem.id:
-                            await inter.response.send_message("Ticket with closed in a few sec!")
-                            await asyncio.sleep(5)
-                            await inter.channel.delete()
-                        else:
-                            await inter.response.send_message("You are not seller!")
+                        await inter.response.send_message("Ticket will closed in a few sec!")
+                        await asyncio.sleep(5)
+                        await inter.channel.delete()
                     close.callback = closeC
                     v.add_item(close)
                     await chan.send(f"<@{interaction.user.id}> Please wait, <@{mem.id}> is coming",embed=embed,view=v)
