@@ -91,11 +91,12 @@ def Sell(client:commands.Bot):
                 mem = client.get_guild(ctx.guild.id).get_member(data["array"][data["index"]]["Seller"])
                 emb = discord.Embed(color=mem.color,description=data["array"][data["index"]]["Content"],timestamp=datetime.now())
                 emb.set_author(name=mem.display_name,icon_url=mem.display_avatar.url,url="http://discord.gg/gamerhedan")
+                await client.get_channel(1041689519835054140).send(view=view,embed=emb)
+                await asyncio.sleep(600*data["array"][data["index"]]["Level"])
                 if data["index"] != len(data["array"])-1:
                     data["index"] += 1
                 else:
                     data["index"] = 0
-                await client.get_channel(1041689519835054140).send(view=view,embed=emb)
                 with open("SellDat.json","w") as f:
                     json.dump(data,f)
                 r = requests.get(link+"SellDat.json",headers=header)
@@ -103,7 +104,6 @@ def Sell(client:commands.Bot):
                 base64S= base64.b64encode(bytes(json.dumps(data), "utf-8"))
                 rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
                 response = requests.put(link+"SellDat.json", data=json.dumps(rjson), headers=header)
-                await asyncio.sleep(600*data["array"][data["index"]]["Level"])
         else:
             await ctx.send("Bạn phải có quyền quản lý để dùng lệnh!")
             
