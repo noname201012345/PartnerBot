@@ -37,8 +37,11 @@ def MultiChat(client:discord.Client):
                                         break
                         if cs==0:
                                 for x in marr:
-                                    chan = client.get_channel(data[x]["channel"])
-                                    await chan.send(f"**Server:** {ctx.guild.name} vừa tham gia!")
+                                    try:
+                                        chan = client.get_channel(data[x]["channel"])
+                                        await chan.send(f"**Server:** {ctx.guild.name} vừa tham gia!")
+                                    except:
+                                        pass
                                 marr.append(guild)
                                 data[guild] = {}
                                 data[guild]["channel"] = ctx.channel.id
