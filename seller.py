@@ -26,6 +26,11 @@ def Sell(client:commands.Bot):
             data["array"].append({"Seller":mem.id,"Content":f"{Mess.content}","Level":1})
             with open("SellDat.json","w") as f:
                 json.dump(data,f)
+            r = requests.get(link+"SellDat.json",headers=header)
+            sh=r.json()["sha"]
+            base64S= base64.b64encode(bytes(json.dumps(data), "utf-8"))
+            rjson = {"message":"cf", "content":base64S.decode("utf-8"),"sha":sh}
+            response = requests.put(link+"SellDat.json", data=json.dumps(rjson), headers=header)
             await ctx.send("Thêm Seller thành công!")
         else:
             await ctx.send("Bạn phải có quyền quản lý để dùng lệnh!")
