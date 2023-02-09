@@ -12,7 +12,7 @@ from MultiChat import MultiChat
 from team import Team
 from Voucher.main import Vouching
 from seller import Sell
-from 4v import 4v_run
+from bot4v import bot4v_run
 
 load_dotenv()
 
@@ -64,5 +64,5 @@ Vouching(client=client)
 Sell(client=client)
                                 
 token = os.getenv("token")
-4v_run()
+bot4v_run()
 client.run(token)
