@@ -47,6 +47,6 @@ def run():
   client.run(os.getenv("4v"))
 
 
-def 4v_run():  
+def bot4v_run():  
     t = Thread(target=run)
     t.start()
