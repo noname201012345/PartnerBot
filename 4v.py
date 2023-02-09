@@ -5,7 +5,6 @@ import requests
 import asyncio
 from dotenv import load_dotenv
 from threading import Thread
-
 load_dotenv()
 
 client=commands.Bot(command_prefix=':', self_bot=True, help_command=None)
